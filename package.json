@@ -1,17 +1,16 @@
 {
-  "name": "pear-music",
-  "desktopName": "com.github.th_ch.pear_music",
-  "productName": "Pear Desktop",
-  "version": "3.11.0",
-  "description": "Pear Desktop App - including custom plugins",
+  "name": "ytmusic-involvex",
+  "desktopName": "com.github.involvex.ytmusic",
+  "productName": "YTMusic Involvex-Edition",
+  "version": "3.12.0",
+  "description": "YTMusic Involvex-Edition",
   "main": "./dist/main/index.js",
   "type": "module",
   "license": "MIT",
   "repository": "pear-devs/pear-desktop",
   "author": {
-    "name": "th-ch",
-    "email": "th-ch@users.noreply.github.com",
-    "url": "https://github.com/pear-devs/pear-desktop"
+    "name": "involvex",
+    "url": "https://involvex.github.io/involvex"
   },
   "scripts": {
     "test": "pnpm playwright test",
