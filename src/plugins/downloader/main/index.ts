@@ -58,11 +58,18 @@ const ffmpeg = lazy(async () =>
 );
 const ffmpegMutex = new Mutex();
 
+// Define types for Platform.shim.eval
+interface BuildScriptResult {
+  output: string;
+}
+
+type VMPrimitive = string | number | boolean | null | undefined;
+
 Platform.shim.eval = async (
-  data: Types.BuildScriptResult,
-  env: Record<string, Types.VMPrimative>,
+  data: BuildScriptResult,
+  env: Record<string, VMPrimitive>,
 ) => {
-  const properties = [];
+  const properties: string[] = [];
 
   if (env.n) {
     properties.push(`n: exportedVars.nFunction("${env.n}")`);
@@ -70,6 +77,11 @@ Platform.shim.eval = async (
 
   if (env.sig) {
     properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
+  }
+
+  // Type guard to ensure data has output property
+  if (!('output' in data)) {
+    throw new Error('Invalid build script result: missing output property');
   }
 
   const code = `${data.output}\nreturn { ${properties.join(', ')} }`;
@@ -112,7 +124,6 @@ const sendError = (error: Error, source?: string) => {
   const songNameMessage = source ? `\nin ${source}` : '';
   const cause = error.cause
     ? `\n\n${
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string,@typescript-eslint/restrict-template-expressions
         error.cause instanceof Error ? error.cause.toString() : error.cause
       }`
     : '';
@@ -195,7 +206,7 @@ export const onMainLoad = async ({
       if (interpreterJavascript) {
         // This is a workaround to run the interpreterJavascript code
         // Maybe there is a better way to do this (e.g. https://github.com/Siubaak/sval ?)
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval,@typescript-eslint/no-unsafe-call
+
         new Function(interpreterJavascript)();
 
         const poTokenResult = await BG.PoToken.generate({
@@ -495,7 +506,7 @@ async function downloadChunks(
   sendFeedback: (str: string, value?: number) => void,
   increasePlaylistProgress: (value: number) => void = () => {},
 ) {
-  const chunks = [];
+  const chunks: Uint8Array[] = [];
   let downloaded = 0;
   for await (const chunk of stream) {
     downloaded += chunk.length;

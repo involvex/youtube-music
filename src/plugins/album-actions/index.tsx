@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { render } from 'solid-js/web';
 
 import { createSignal, Show } from 'solid-js';

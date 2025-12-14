@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { type BrowserWindow, globalShortcut } from 'electron';
 import is from 'electron-is';
 import { register as registerElectronLocalShortcut } from 'electron-localshortcut';

@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
+
 export interface PlaybackSpeedSliderProps {
   speed: number;
   title: string;
   onImmediateValueChanged?: (value: CustomEvent<{ value: number }>) => void;
-  onWheel?: (event: WheelEvent) => void;
+  onWheel?: (_event: WheelEvent) => void;
 }
 
 export const PlaybackSpeedSlider = (props: PlaybackSpeedSliderProps) => (

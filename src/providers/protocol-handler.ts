@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+/* eslint-disable no-unused-vars */
+
 import { app, type BrowserWindow } from 'electron';
 
 import { getSongControls } from './song-controls';

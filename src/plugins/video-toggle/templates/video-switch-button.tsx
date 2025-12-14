@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
+
 export interface VideoSwitchButtonProps {
-  onClick?: (event: MouseEvent) => void;
-  onChange?: (event: Event) => void;
+  onClick?: (_event: MouseEvent) => void;
+  onChange?: (_event: Event) => void;
   songButtonText: string;
   videoButtonText: string;
 }

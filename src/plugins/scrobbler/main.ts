@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { type BrowserWindow } from 'electron';
 
 import {

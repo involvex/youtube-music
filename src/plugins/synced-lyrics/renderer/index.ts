@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { createRenderer } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
 

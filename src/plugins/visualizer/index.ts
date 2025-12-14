@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import emptyStyle from './empty-player.css?inline';
 import { createPlugin } from '@/utils';
 import { type Visualizer } from './visualizers/visualizer';
@@ -151,7 +153,6 @@ export default createPlugin({
     async onPlayerApiReady(_, { getConfig }) {
       const config = await getConfig();
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let visualizerType: { new (...args: any[]): Visualizer<unknown> } = vudio;
 
       if (config.type === 'wave') {

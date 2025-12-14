@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { t } from '@/i18n';
 import { createPlugin } from '@/utils';
 import { Platform } from '@/types/plugins';

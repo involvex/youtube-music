@@ -464,6 +464,7 @@ async function createMainWindow() {
   function lateSave(
     key: string,
     value: unknown,
+    // eslint-disable-next-line no-unused-vars
     fn: (key: string, value: unknown) => void = config.set,
   ) {
     if (savedTimeouts[key]) {
@@ -687,7 +688,6 @@ app.whenReady().then(async () => {
           shortcutDetails.target !== appLocation ||
           shortcutDetails.appUserModelId !== appID
         ) {
-          // eslint-disable-next-line @typescript-eslint/only-throw-error
           throw 'needUpdate';
         }
       } catch (error) {

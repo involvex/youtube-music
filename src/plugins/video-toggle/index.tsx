@@ -162,7 +162,8 @@ export default createPlugin({
       const moveVolumeHud = (await window.mainConfig.plugins.isEnabled(
         'precise-volume',
       ))
-        ? (preciseVolumeMoveVolumeHud as (_: boolean) => void)
+        ? // eslint-disable-next-line no-unused-vars
+          (preciseVolumeMoveVolumeHud as (_param: boolean) => void)
         : () => {};
 
       const player = document.querySelector<

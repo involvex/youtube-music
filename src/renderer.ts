@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import i18next from 'i18next';
 
 import { setTheme } from 'mdui/functions/setTheme.js';
@@ -413,9 +415,9 @@ async function onApiLoaded() {
  */
 const definePearTransElements = () => {
   const PearTrans = function () {};
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
   PearTrans.prototype = Object.create(HTMLElement.prototype);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
   PearTrans.prototype.connectedCallback = function () {
     const that = this as HTMLElement;
     const key = that.getAttribute('key');

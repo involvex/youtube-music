@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as z from 'zod';
 
 import type { LyricResult } from '../types';

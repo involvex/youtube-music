@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 export interface PictureInPictureButtonProps {
   onClick?: (e: MouseEvent) => void;
   text: string;

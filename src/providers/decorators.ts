@@ -1,4 +1,8 @@
-export function singleton<T extends (...params: never[]) => unknown>(fn: T): T {
+/* eslint-disable no-unused-vars */
+
+export function singleton<T extends (..._params: never[]) => unknown>(
+  fn: T,
+): T {
   let called = false;
 
   return ((...args) => {
@@ -11,7 +15,7 @@ export function singleton<T extends (...params: never[]) => unknown>(fn: T): T {
   }) as T;
 }
 
-export function debounce<T extends (...params: never[]) => unknown>(
+export function debounce<T extends (..._: never[]) => unknown>(
   fn: T,
   delay: number,
 ): T {

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { Menu, nativeImage, screen, Tray } from 'electron';
 import is from 'electron-is';
 

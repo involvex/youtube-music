@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-import { sortSegments } from '../segments';
+import { sortSegments } from '../segments.ts';
 
 test('Segment sorting', () => {
   expect(

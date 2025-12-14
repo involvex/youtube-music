@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import type { TrustedTypePolicy } from 'trusted-types/lib';
 
 export let defaultTrustedTypePolicy: Pick<

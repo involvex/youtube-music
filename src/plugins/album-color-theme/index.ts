@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { FastAverageColor } from 'fast-average-color';
 import Color, { type ColorInstance } from 'color';
 

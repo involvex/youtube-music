@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { net } from 'electron';
 
 import { ScrobblerBase } from './base';

@@ -31,7 +31,6 @@ export interface MenuContext<
   refresh: () => Promise<void> | void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PreloadContext<
   Config extends PluginConfig,
 > extends BaseContext<Config> {}

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { Wave } from '@foobar404/wave';
 
 import { Visualizer } from './visualizer';

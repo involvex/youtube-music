@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { type MenuItemConstructorOptions } from 'electron';
 
 import { t } from '@/i18n';

@@ -88,61 +88,70 @@ export default createRenderer<
         <Show when={!hidden()}>
           <CaptionsSettingButton
             label={t('plugins.captions-selector.templates.title')}
-            onClick={async () => {
-              const appApi = document.querySelector<AppElement>('ytmusic-app');
+            onClick={() => {
+              const handleCaptionSelection = async () => {
+                const appApi =
+                  document.querySelector<AppElement>('ytmusic-app');
 
-              if (this.captionTrackList?.length) {
-                const currentCaptionTrack =
-                  playerApi.getOption<LanguageOptions>('captions', 'track');
+                if (this.captionTrackList?.length) {
+                  const currentCaptionTrack =
+                    playerApi.getOption<LanguageOptions>('captions', 'track');
 
-                let currentIndex = currentCaptionTrack
-                  ? this.captionTrackList.indexOf(
-                      this.captionTrackList.find(
+                  // Simplified currentIndex calculation using findIndex
+                  const currentIndex = currentCaptionTrack
+                    ? this.captionTrackList.findIndex(
                         (track) =>
                           track.languageCode ===
                           currentCaptionTrack.languageCode,
-                      )!,
-                    )
-                  : null;
+                      )
+                    : -1;
 
-                const captionLabels = [
-                  ...this.captionTrackList.map((track) => track.displayName),
-                  'None',
-                ];
+                  const captionLabels = [
+                    ...this.captionTrackList.map((track) => track.displayName),
+                    'None',
+                  ];
 
-                currentIndex = (await ipc.invoke(
-                  'peard:captions-selector',
-                  captionLabels,
-                  currentIndex,
-                )) as number;
-                if (currentIndex === null) {
-                  return;
-                }
+                  const selectedIndex = (await ipc.invoke(
+                    'peard:captions-selector',
+                    captionLabels,
+                    currentIndex,
+                  )) as number;
 
-                const newCaptions = this.captionTrackList[currentIndex];
-                setConfig({ lastCaptionsCode: newCaptions?.languageCode });
-                if (newCaptions) {
-                  playerApi.setOption('captions', 'track', {
-                    languageCode: newCaptions.languageCode,
-                  });
-                  appApi?.toastService?.show(
-                    t('plugins.captions-selector.toast.caption-changed', {
-                      language: newCaptions.displayName,
-                    }),
-                  );
+                  if (selectedIndex === -1) {
+                    return;
+                  }
+
+                  const newCaptions =
+                    selectedIndex === captionLabels.length - 1
+                      ? null // "None" option selected
+                      : this.captionTrackList[selectedIndex];
+
+                  setConfig({ lastCaptionsCode: newCaptions?.languageCode });
+                  if (newCaptions) {
+                    playerApi.setOption('captions', 'track', {
+                      languageCode: newCaptions.languageCode,
+                    });
+                    appApi?.toastService?.show(
+                      t('plugins.captions-selector.toast.caption-changed', {
+                        language: newCaptions.displayName,
+                      }),
+                    );
+                  } else {
+                    playerApi.setOption('captions', 'track', {});
+                    appApi?.toastService?.show(
+                      t('plugins.captions-selector.toast.caption-disabled'),
+                    );
+                  }
+
+                  setTimeout(() => playerApi.playVideo());
                 } else {
-                  playerApi.setOption('captions', 'track', {});
                   appApi?.toastService?.show(
-                    t('plugins.captions-selector.toast.caption-disabled'),
+                    t('plugins.captions-selector.toast.no-captions'),
                   );
                 }
+              };
 
-                setTimeout(() => playerApi.playVideo());
-              } else {
-                appApi?.toastService?.show(
-                  t('plugins.captions-selector.toast.no-captions'),
-                );
-              }
+              handleCaptionSelection().catch(console.error);
             }}
             ref={this.captionsSettingsButton}
           />

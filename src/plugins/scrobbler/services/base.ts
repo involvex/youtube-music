@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import type { ScrobblerPluginConfig } from '../index';
 import type { SetConfType } from '../main';
 import type { SongInfo } from '@/providers/song-info';

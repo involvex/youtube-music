@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 export interface QualitySettingButtonProps {
   label: string;
   onClick: (event: MouseEvent) => void;

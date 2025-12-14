@@ -180,10 +180,8 @@ declare module '@jellybrick/mpris-service' {
     setProperty(property: string, valuePlain: unknown): void;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface RootInterface {}
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface PlayerInterface {}
 
   export interface TracklistInterface {

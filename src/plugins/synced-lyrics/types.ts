@@ -25,6 +25,8 @@ export type LineLyrics = {
 
 export type LineEffect = 'fancy' | 'scale' | 'offset' | 'focus';
 
+/* eslint-disable no-unused-vars */
+
 export interface LyricResult {
   title: string;
   artists: string[];

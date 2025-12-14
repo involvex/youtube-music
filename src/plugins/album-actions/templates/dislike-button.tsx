@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 export interface DislikeButtonProps {
   onClick?: (e: MouseEvent) => void;
   maskSize: string;

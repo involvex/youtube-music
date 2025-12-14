@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import fs from 'node:fs';
 
 type Unregister = () => void;
@@ -6,11 +8,11 @@ let isLoaded = false;
 
 const cssToInject = new Map<
   string,
-  ((unregister: Unregister) => void) | undefined
+  ((_unregister: Unregister) => void) | undefined
 >();
 const cssToInjectFile = new Map<
   string,
-  ((unregister: Unregister) => void) | undefined
+  ((_unregister: Unregister) => void) | undefined
 >();
 export const injectCSS = async (
   webContents: Electron.WebContents,

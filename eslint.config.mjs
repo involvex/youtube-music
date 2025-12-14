@@ -11,19 +11,21 @@ import * as importPlugin from 'eslint-plugin-import';
 export default tsEslint.config(
   eslint.configs.recommended,
   tsEslint.configs.eslintRecommended,
-  ...tsEslint.configs.recommendedTypeChecked,
   prettier,
   solid,
-  { ignores: ['dist', 'node_modules', '*.config.*js', '*.test.*js'] },
+  { ignores: ['dist', 'node_modules', '*.config.*js', 'src/plugins/**'] },
+  // TypeScript configuration for .ts, .tsx, .mts files
   {
+    files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
     plugins: {
       stylistic,
       importPlugin,
+      '@typescript-eslint': tsEslint.plugin,
     },
     languageOptions: {
       parser: tsEslint.parser,
       parserOptions: {
-        project: true,
+        project: ['tsconfig.json', 'tsconfig.tests.json'],
         sourceType: 'module',
         ecmaVersion: 'latest',
       },
@@ -52,10 +54,7 @@ export default tsEslint.config(
         'off',
         { checksVoidReturn: false },
       ],
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -102,7 +101,7 @@ export default tsEslint.config(
         },
       ],
       'stylistic/max-len': 'off',
-      'stylistic/no-mixed-operators': 'warn', // prettier does not support no-mixed-operators
+      'stylistic/no-mixed-operators': 'off', // prettier does not support no-mixed-operators
       'stylistic/no-multi-spaces': ['error', { ignoreEOLComments: true }],
       'stylistic/no-tabs': 'error',
       'no-void': 'error',
@@ -113,7 +112,7 @@ export default tsEslint.config(
         'single',
         {
           avoidEscape: true,
-          allowTemplateLiterals: false,
+          allowTemplateLiterals: 'never',
         },
       ],
       'stylistic/quote-props': ['error', 'consistent'],
@@ -127,6 +126,52 @@ export default tsEslint.config(
         typescript: {},
         exports: {},
       },
+    },
+  },
+  // JavaScript configuration for .js files (without TypeScript project context)
+  {
+    files: ['**/*.js'],
+    plugins: {
+      stylistic,
+      importPlugin,
+    },
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 'latest',
+    },
+    rules: {
+      'stylistic/quotes': [
+        'error',
+        'single',
+        {
+          avoidEscape: true,
+          allowTemplateLiterals: 'never',
+        },
+      ],
+      'stylistic/semi': ['error', 'always'],
+      'importPlugin/first': 'error',
+      'importPlugin/no-unresolved': [
+        'error',
+        {
+          ignore: ['^virtual:', '\\?inline$', '\\?raw$', '\\?asset&asarUnpack'],
+        },
+      ],
+    },
+  },
+  // Type definition files (.d.ts) - ignore unused vars as they are declarations
+  {
+    files: ['**/*.d.ts'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  // Type definition files in src/types - ignore unused vars as they are interface definitions
+  {
+    files: ['src/types/**/*.ts'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
 );

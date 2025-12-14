@@ -6,6 +6,7 @@ import * as config from '@/config';
 
 import type { GetPlayerResponse } from '@/types/get-player-response';
 
+/* eslint-disable no-unused-vars */
 export enum MediaType {
   /**
    * Audio uploaded by the original artist
@@ -170,6 +171,7 @@ const handleData = async (
   return songInfo;
 };
 
+/* eslint-disable no-unused-vars */
 export enum SongInfoEvent {
   VideoSrcChanged = 'peard:video-src-changed',
   PlayOrPaused = 'peard:play-or-paused',
@@ -178,8 +180,8 @@ export enum SongInfoEvent {
 
 // This variable will be filled with the callbacks once they register
 export type SongInfoCallback = (
-  songInfo: SongInfo,
-  event: SongInfoEvent,
+  _songInfo: SongInfo,
+  _event: SongInfoEvent,
 ) => void;
 const callbacks: Set<SongInfoCallback> = new Set();
 

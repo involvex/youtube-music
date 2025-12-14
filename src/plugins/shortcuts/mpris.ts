@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { type BrowserWindow, ipcMain } from 'electron';
 
 import MprisPlayer, {

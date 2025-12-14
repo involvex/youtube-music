@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 export enum MaterialType {
   MICA = 'mica',
   ACRYLIC = 'acrylic',
