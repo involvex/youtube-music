@@ -45,20 +45,20 @@ jobs:
 
       # Only vite build without release if it is a fork, or it is a pull-request
       - name: Vite Build
-        if: github.repository == 'pear-devs/pear-desktop' && github.event_name == 'pull_request'
+        if: github.repository == 'involvex/youtube-music' && github.event_name == 'pull_request'
         run: |
           pnpm build
 
       # Build and release if it's the main repository and is not pull-request
       - name: Build and release on Mac
-        if: startsWith(matrix.os, 'macOS') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'macOS') && (github.repository == 'involvex/youtube-music' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pnpm release:mac
 
       - name: Build and release on Linux
-        if: startsWith(matrix.os, 'ubuntu') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'ubuntu') && (github.repository == 'involvex/youtube-music' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -72,7 +72,7 @@ jobs:
           pnpm release:linux
 
       - name: Build and release on Windows
-        if: startsWith(matrix.os, 'windows') && (github.repository == 'pear-devs/pear-desktop' && github.event_name != 'pull_request')
+        if: startsWith(matrix.os, 'windows') && (github.repository == 'involvex/youtube-music' && github.event_name != 'pull_request')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -88,7 +88,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release Pear Desktop
-    if: github.repository == 'pear-devs/pear-desktop' && github.ref == 'refs/heads/master'
+    if: github.repository == 'involvex/youtube-music' && github.ref == 'refs/heads/master'
     needs: build
     steps:
       - uses: actions/checkout@v5
@@ -149,11 +149,11 @@ jobs:
           name: ${{ env.VERSION_TAG }}
           replacebody: true
           body: |
-            See [changelog](https://github.com/pear-devs/pear-desktop/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
+            See [changelog](https://github.com/involvex/youtube-music/blob/master/changelog.md#${{ env.CHANGELOG_ANCHOR }}) for the list of updates and the full diff.
 
             Thanks to all contributors! 🏅
 
-            (Note for Windows: `Pear-Desktop-Web-Setup-${{ env.VERSION_TAG }}.exe` is an installer, and `Pear-Desktop-${{ env.VERSION_TAG }}.exe` is a portable version)
+            (Note for Windows: `YT Music Involvex-Edition-Web-Setup-${{ env.VERSION_TAG }}.exe` is an installer, and `YT Music Involvex-Edition-${{ env.VERSION_TAG }}.exe` is a portable version)
 
       - name: Update changelog
         if: ${{ env.VERSION_HASH == '' }}
