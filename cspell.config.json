@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "MDUI",
+    "mdui",
+    "Electron",
+    "TypeScript",
+    "YouTube",
+    "YTMusic",
+    "Involvex",
+    "Electron",
+    "Vite",
+    "ESLint",
+    "Prettier",
+    "pnpm",
+    "nodejs"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    ".vite-inspect/**",
+    "test-results/**",
+    "coverage/**",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.ts"
+  ],
+  "ignoreWords": ["mdui", "MDUI"],
+  "flagWords": []
+}

@@ -1,3 +1,4 @@
+/// <reference path="../../mdui.d.ts" />
 import { render } from 'solid-js/web';
 
 import { IconChevronLeft } from '@mdui/icons/chevron-left.js';

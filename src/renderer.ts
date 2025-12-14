@@ -55,7 +55,7 @@ async function onApiLoaded() {
   // Workaround for macOS traffic lights
   {
     let osType = 'Unknown';
-    if (window.electronIs.osx()) {
+    if (window.electronIs.macOS()) {
       osType = 'Macintosh';
     } else if (window.electronIs.windows()) {
       osType = 'Windows';
