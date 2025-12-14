@@ -1,4 +1,9 @@
-import { DefaultPresetList, type Preset } from './types';
+import {
+  DefaultPresetList,
+  DefaultNetworkResilienceConfig,
+  type Preset,
+  type NetworkResilienceConfig,
+} from './types';
 
 import style from './style.css?inline';
 
@@ -22,6 +27,7 @@ export type DownloaderPluginConfig = {
   customPresetSetting: Preset;
   skipExisting: boolean;
   playlistMaxItems?: number;
+  networkResilience: NetworkResilienceConfig;
 };
 
 export const defaultConfig: DownloaderPluginConfig = {
@@ -38,6 +44,7 @@ export const defaultConfig: DownloaderPluginConfig = {
   customPresetSetting: DefaultPresetList['mp3 (256kbps)'], // Presets
   skipExisting: false,
   playlistMaxItems: undefined,
+  networkResilience: DefaultNetworkResilienceConfig,
 };
 
 export default createPlugin({

@@ -121,6 +121,10 @@ app.commandLine.appendSwitch(
 );
 // Disable Fluent Scrollbar (for OverlayScrollbar)
 app.commandLine.appendSwitch('disable-features', 'FluentScrollbar');
+
+// Enable unsafe SwiftShader for WebGL software fallback (deprecated in newer Chromium)
+// This ensures WebGL continues to work on systems without proper GPU drivers
+app.commandLine.appendSwitch('enable-unsafe-swiftshader');
 if (config.get('options.disableHardwareAcceleration')) {
   if (is.dev()) {
     console.log('Disabling hardware acceleration');
@@ -942,11 +946,24 @@ function removeContentSecurityPolicy(
       delete details.responseHeaders['content-security-policy'];
       delete details.responseHeaders['Content-Security-Policy'];
 
+      // Check if this is an ad request (common ad domains)
+      const isAdRequest = details.url.includes('doubleclick.net') ||
+                         details.url.includes('googlesyndication.com') ||
+                         details.url.includes('googleadservices.com') ||
+                         details.url.includes('pagead');
+
       if (
         !details.responseHeaders['access-control-allow-origin'] &&
         !details.responseHeaders['Access-Control-Allow-Origin']
       ) {
-        details.responseHeaders['access-control-allow-origin'] = ['https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com'];
+        if (isAdRequest) {
+          // For ad requests, allow all origins with wildcard
+          // Ad networks typically don't use credentials
+          details.responseHeaders['access-control-allow-origin'] = ['*'];
+        } else {
+          // For regular requests from music.youtube.com, use the specific origin
+          details.responseHeaders['access-control-allow-origin'] = ['https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com'];
+        }
       }
     }
 

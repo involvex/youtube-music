@@ -946,6 +946,20 @@
         "visualizer-type": "Visualizer Type"
       },
       "name": "Visualizer"
+    },
+    "activity-guardian": {
+      "description": "Prevents YouTube's inactivity detection system from interrupting continuous playback",
+      "name": "Activity Guardian",
+      "menu": {
+        "prevent-suspension": "Prevent automatic suspension",
+        "smart-pause-prevention": "Smart pause prevention",
+        "stealth-mode": "Stealth mode",
+        "debug-mode": "Debug mode",
+        "heartbeat-interval": "Set heartbeat interval",
+        "force-activity": "Force activity now",
+        "status": "Show status",
+        "status-details": "Enabled: {{enabled}} | Playing: {{isPlaying}} | Last activity: {{lastActivity}} | Interval: {{interval}}"
+      }
     }
   }
 }

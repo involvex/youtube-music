@@ -13,7 +13,16 @@ export default tsEslint.config(
   tsEslint.configs.eslintRecommended,
   prettier,
   solid,
-  { ignores: ['dist', 'node_modules', '*.config.*js', 'src/plugins/**'] },
+  {
+    ignores: [
+      'dist',
+      'node_modules',
+      '*.config.*js',
+      'src/plugins/**',
+      '.vite-inspect/**',
+      'vite-plugins/**',
+    ],
+  },
   // TypeScript configuration for .ts, .tsx, .mts files
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.mts'],

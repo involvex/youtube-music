@@ -3,6 +3,17 @@ export interface Preset {
   ffmpegArgs: string[];
 }
 
+export interface NetworkResilienceConfig {
+  enabled: boolean;
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffMultiplier: number;
+  jitter: boolean;
+  requestTimeout: number;
+  connectionTimeout: number;
+}
+
 // Presets for FFmpeg
 export const DefaultPresetList: Record<string, Preset> = {
   'mp3 (256kbps)': {
@@ -17,6 +28,17 @@ export const DefaultPresetList: Record<string, Preset> = {
     extension: null,
     ffmpegArgs: [],
   },
+};
+
+export const DefaultNetworkResilienceConfig: NetworkResilienceConfig = {
+  enabled: true,
+  maxRetries: 5,
+  baseDelay: 1000, // 1 second
+  maxDelay: 30000, // 30 seconds
+  backoffMultiplier: 2,
+  jitter: true,
+  requestTimeout: 30000, // 30 seconds
+  connectionTimeout: 10000, // 10 seconds
 };
 
 export interface VideoFormat {

@@ -33,6 +33,12 @@ import {
 } from '@/providers/song-info';
 import { getNetFetchAsFetch } from '@/plugins/utils/main';
 import { t } from '@/i18n';
+import {
+  NetworkResilienceManager,
+  NetworkError,
+  NetworkErrorType,
+  type NetworkOperation,
+} from './network-utils';
 
 import { DefaultPresetList, type Preset, VideoFormatList } from '../types';
 
@@ -368,13 +374,42 @@ async function downloadSongUnsafe(
       );
   }
 
-  let info: TrackInfo | VideoInfo = await yt.music.getInfo(id);
+  // Get track info with retry mechanism
+  const getInfoOperation: NetworkOperation<
+    TrackInfo | VideoInfo
+  > = async () => {
+    const result = await yt.music.getInfo(id);
+    if (!result) {
+      throw new Error('No track info received');
+    }
+    return result;
+  };
 
-  if (!info) {
-    throw new Error(
-      t('plugins.downloader.backend.feedback.video-id-not-found'),
+  const getInfoResult = await NetworkResilienceManager.executeWithRetry(
+    getInfoOperation,
+    config.networkResilience.enabled
+      ? {
+          maxRetries: config.networkResilience.maxRetries,
+          baseDelay: config.networkResilience.baseDelay,
+          maxDelay: config.networkResilience.maxDelay,
+          backoffMultiplier: config.networkResilience.backoffMultiplier,
+          jitter: config.networkResilience.jitter,
+          timeout: config.networkResilience.requestTimeout,
+        }
+      : { maxRetries: 0 },
+    `Getting track info for ${id}`,
+  );
+
+  if (!getInfoResult.success) {
+    throw new NetworkError(
+      `Failed to get track info after ${getInfoResult.attempt} attempts: ${getInfoResult.error?.message}`,
+      NetworkErrorType.CONNECTION_FAILED,
+      false,
+      getInfoResult.error,
     );
   }
+
+  let info = getInfoResult.data!;
 
   const metadata = getMetadata(info);
   if (metadata.album === 'N/A') {
@@ -393,8 +428,36 @@ async function downloadSongUnsafe(
   let playabilityStatus = info.playability_status;
   let bypassedResult = null;
   if (playabilityStatus?.status === 'LOGIN_REQUIRED') {
-    // Try to bypass the age restriction
-    bypassedResult = await getAndroidTvInfo(id);
+    // Try to bypass the age restriction with retry mechanism
+    const getAndroidTvInfoOperation: NetworkOperation<VideoInfo> = async () => {
+      return await getAndroidTvInfo(id);
+    };
+
+    const bypassResult = await NetworkResilienceManager.executeWithRetry(
+      getAndroidTvInfoOperation,
+      config.networkResilience.enabled
+        ? {
+            maxRetries: Math.min(config.networkResilience.maxRetries, 3), // Fewer retries for bypass attempts
+            baseDelay: config.networkResilience.baseDelay,
+            maxDelay: config.networkResilience.maxDelay,
+            backoffMultiplier: config.networkResilience.backoffMultiplier,
+            jitter: config.networkResilience.jitter,
+            timeout: config.networkResilience.requestTimeout,
+          }
+        : { maxRetries: 0 },
+      `Bypassing age restriction for ${id}`,
+    );
+
+    if (!bypassResult.success) {
+      console.warn(
+        `Age restriction bypass failed after ${bypassResult.attempt} attempts: ${bypassResult.error?.message}`,
+      );
+      throw new Error(
+        `[${playabilityStatus.status}] ${playabilityStatus.reason}`,
+      );
+    }
+
+    bypassedResult = bypassResult.data!;
     playabilityStatus = bypassedResult.playability_status;
 
     if (playabilityStatus?.status === 'LOGIN_REQUIRED') {
@@ -671,25 +734,51 @@ export async function downloadPlaylist(givenUrl?: string | URL) {
   sendFeedback(t('plugins.downloader.backend.feedback.getting-playlist-info'));
   let playlist: Playlist;
   const items: YTNodes.MusicResponsiveListItem[] = [];
-  try {
-    playlist = await yt.music.getPlaylist(playlistId);
-    if (playlist?.items) {
-      const filteredItems = playlist.items.filter(
-        (item): item is YTNodes.MusicResponsiveListItem =>
-          item instanceof YTNodes.MusicResponsiveListItem,
-      );
 
-      items.push(...filteredItems);
+  // Get playlist info with retry mechanism
+  const getPlaylistOperation: NetworkOperation<Playlist> = async () => {
+    const result = await yt.music.getPlaylist(playlistId);
+    if (!result) {
+      throw new Error('No playlist info received');
     }
-  } catch (error: unknown) {
+    return result;
+  };
+
+  const playlistResult = await NetworkResilienceManager.executeWithRetry(
+    getPlaylistOperation,
+    config.networkResilience.enabled
+      ? {
+          maxRetries: config.networkResilience.maxRetries,
+          baseDelay: config.networkResilience.baseDelay,
+          maxDelay: config.networkResilience.maxDelay,
+          backoffMultiplier: config.networkResilience.backoffMultiplier,
+          jitter: config.networkResilience.jitter,
+          timeout: config.networkResilience.requestTimeout,
+        }
+      : { maxRetries: 0 },
+    `Getting playlist info for ${playlistId}`,
+  );
+
+  if (!playlistResult.success) {
     sendError(
-      Error(
+      new Error(
         t('plugins.downloader.backend.feedback.playlist-is-mix-or-private', {
-          error: String(error),
+          Error: `Failed after ${playlistResult.attempt} attempts: ${playlistResult.error?.message}`,
         }),
       ),
     );
     return;
+    // Early return if playlistResult is not successful
+  }
+  playlist = playlistResult.data!;
+
+  if (playlist?.items) {
+    const filteredItems = playlist.items.filter(
+      (item): item is YTNodes.MusicResponsiveListItem =>
+        item instanceof YTNodes.MusicResponsiveListItem,
+    );
+
+    items.push(...filteredItems);
   }
 
   if (!playlist || !playlist.items || playlist.items.length === 0) {
@@ -866,7 +955,7 @@ const getVideoId = (url: URL | string): string | null => {
   return new URL(url).searchParams.get('v');
 };
 
-const getMetadata = (info: TrackInfo): CustomSongInfo => ({
+const getMetadata = (info: TrackInfo | VideoInfo): CustomSongInfo => ({
   videoId: info.basic_info.id!,
   title: cleanupName(info.basic_info.title!),
   artist: cleanupName(info.basic_info.author!),
