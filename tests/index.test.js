@@ -4,7 +4,7 @@ import process from 'node:process';
 import { _electron as electron } from 'playwright';
 import { test, expect } from '@playwright/test';
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 
 const appPath = path.resolve(import.meta.dirname, '..');
 
