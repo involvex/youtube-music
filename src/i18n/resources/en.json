@@ -208,8 +208,8 @@
       "restart": "Restart App",
       "show": "Show window",
       "tooltip": {
-        "default": "Pear Desktop",
-        "with-song-info": "Pear Desktop: {{artist}} - {{title}}"
+        "default": "YTMusiC Involvex-Editions",
+        "with-song-info": "YTMusiC Involvex-Editions - {{artist}} - {{title}}"
       }
     }
   },

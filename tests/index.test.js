@@ -32,7 +32,11 @@ test('Pear Desktop App - With default settings, app is launched and visible', as
   // expect(title.replaceAll(/\s/g, ' ')).toEqual('Pear Desktop');
 
   const url = window.url();
-  expect(url.startsWith('https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com')).toBe(true);
+  expect(
+    url.startsWith(
+      'https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com',
+    ),
+  ).toBe(true);
 
   await app.close();
 });

@@ -7,7 +7,9 @@
 [![eslint code style](https://img.shields.io/badge/code_style-eslint-5ed9c7.svg?style=for-the-badge)](https://github.com/pear-devs/pear-desktop/blob/master/eslint.config.mjs)
 [![Build status](https://img.shields.io/github/actions/workflow/status/pear-devs/pear-desktop/build.yml?branch=master&style=for-the-badge)](https://GitHub.com/pear-devs/pear-desktop/releases/)
 [![GitHub All Releases](https://img.shields.io/github/downloads/pear-devs/pear-desktop/total?style=for-the-badge)](https://GitHub.com/pear-devs/pear-desktop/releases/)
+
 <!--[![AUR](https://img.shields.io/aur/version/pear-desktop-bin?color=blueviolet&style=for-the-badge)](https://aur.archlinux.org/packages/pear-desktop-bin)-->
+
 [![Known Vulnerabilities](https://snyk.io/test/github/pear-devs/pear-desktop/badge.svg)](https://snyk.io/test/github/pear-devs/pear-desktop)
 
 </div>
@@ -97,9 +99,9 @@ scoop install extras/pear-desktop
 Alternately you can use [Winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/), Windows 11s
 official CLI package manager to install the `pear-devs.pear-desktop` package.
 
-*Note: Microsoft Defender SmartScreen might block the installation since it is from an "unknown publisher". This is also
+_Note: Microsoft Defender SmartScreen might block the installation since it is from an "unknown publisher". This is also
 true for the manual installation when trying to run the executable(.exe) after a manual download here on github (same
-file).*
+file)._
 
 ```bash
 winget install pear-devs.pear-desktop
@@ -142,6 +144,7 @@ Using plugins, you can:
 Create a folder in `src/plugins/YOUR-PLUGIN-NAME`:
 
 - `index.ts`: the main file of the plugin
+
 ```typescript
 import style from './style.css?inline'; // import style as inline
 
@@ -181,9 +184,13 @@ export default createPlugin({
       });
     },
     // it fired when config changed
-    onConfigChange(newConfig) { /* ... */ },
+    onConfigChange(newConfig) {
+      /* ... */
+    },
     // it fired when plugin disabled
-    stop(context) { /* ... */ },
+    stop(context) {
+      /* ... */
+    },
   },
   renderer: {
     async start(context) {
@@ -194,8 +201,12 @@ export default createPlugin({
       // set plugin config easily
       context.setConfig({ myConfig: api.getVolume() });
     },
-    onConfigChange(newConfig) { /* ... */ },
-    stop(_context) { /* ... */ },
+    onConfigChange(newConfig) {
+      /* ... */
+    },
+    stop(_context) {
+      /* ... */
+    },
   },
   preload: {
     async start({ getConfig }) {
@@ -224,7 +235,7 @@ export default createPlugin({
     enabled: false,
   }, // your custom config
   stylesheets: [style], // your custom style
-  renderer() {} // define renderer hook
+  renderer() {}, // define renderer hook
 });
 ```
 
@@ -241,7 +252,7 @@ export default createPlugin({
   }, // your custom config
   renderer() {
     console.log('hello from renderer');
-  } // define renderer hook
+  }, // define renderer hook
 });
 ```
 

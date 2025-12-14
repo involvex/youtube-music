@@ -7,7 +7,7 @@
   "main": "./dist/main/index.js",
   "type": "module",
   "license": "MIT",
-  "repository": "pear-devs/pear-desktop",
+  "repository": "https://github.com/involvex/youtube-music",
   "author": {
     "name": "involvex",
     "url": "https://involvex.github.io/involvex"
@@ -32,6 +32,9 @@
     "dist:win": "pnpm clean && pnpm build && pnpm electron-builder --win -p never",
     "dist:win:x64": "pnpm clean && pnpm build && pnpm electron-builder --win nsis-web:x64 -p never",
     "lint": "pnpm eslint ./src",
+    "lint:fix": "pnpm eslint ./src --fix",
+    "format": "pnpm prettier --write .",
+    "format:check": "pnpm prettier --check .",
     "changelog": "pnpm dlx auto-changelog",
     "release:linux": "pnpm clean && pnpm build && pnpm electron-builder --linux -p always -c.snap.publish=github",
     "release:mac": "pnpm clean && pnpm build && pnpm electron-builder --mac -p always",
@@ -168,6 +171,7 @@
     "glob": "11.0.3",
     "node-gyp": "11.4.2",
     "playwright": "1.55.0",
+    "prettier": "^3.7.4",
     "ts-morph": "27.0.0",
     "typescript": "5.9.2",
     "typescript-eslint": "8.43.0",
