@@ -1,0 +1,47 @@
+{
+  "name": "ytmusic-involvex-docs",
+  "version": "1.0.0",
+  "description": "Modern documentation website for YTMusic Involvex-Edition",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 3000 -o",
+    "build": "echo 'Static site - no build step required'",
+    "preview": "npx http-server dist -p 4173 -o",
+    "format": "npx prettier --write assets/css/style.css assets/js/*.js index.html",
+    "validate": "npm run validate:structure",
+    "validate:structure": "node scripts/validate-structure.js",
+    "test": "npm run validate && npm run build"
+  },
+  "keywords": [
+    "documentation",
+    "ytmusic",
+    "involvex",
+    "github-pages",
+    "responsive",
+    "dark-mode"
+  ],
+  "author": "YTMusic Involvex-Edition Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ytmusic-involvex/youtube-music.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ytmusic-involvex/youtube-music/issues"
+  },
+  "homepage": "https://ytmusic-involvex.github.io/youtube-music/",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "prettier": "^3.1.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

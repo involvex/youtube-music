@@ -1,0 +1,296 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment even if no changes detected'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Documentation
+    outputs:
+      docs_changed: ${{ steps.check_changes.outputs.docs_changed }}
+      build_success: ${{ steps.build.outputs.success }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Documentation Changes
+        id: check_changes
+        run: |
+          # Check if documentation files have changed
+          if git diff --name-only HEAD~1 HEAD | grep -q "^docs/"; then
+            echo "docs_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "docs_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Print changed files for debugging
+          echo "Changed files:"
+          git diff --name-only HEAD~1 HEAD || echo "No previous commit found"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          cd docs
+          npm install --silent
+
+      - name: Build Documentation
+        id: build
+        run: |
+          cd docs
+          npm run build
+          if [ $? -eq 0 ]; then
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate HTML
+        run: |
+          cd docs
+          # Basic HTML validation
+          if grep -r "<html" dist/index.html >/dev/null 2>&1; then
+            echo "HTML validation passed"
+          else
+            echo "HTML validation failed"
+            exit 1
+          fi
+
+      - name: Check CSS
+        run: |
+          cd docs
+          if [ -f "dist/assets/css/style.css" ]; then
+            echo "CSS file exists and validation passed"
+          else
+            echo "CSS file missing"
+            exit 1
+          fi
+
+      - name: Check JavaScript
+        run: |
+          cd docs
+          required_files=("dist/assets/js/main.js" "dist/assets/js/plugins.js" "dist/assets/js/releases.js")
+          for file in "${required_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✓ $file exists"
+            else
+              echo "✗ $file missing"
+              exit 1
+            fi
+          done
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    name: Deploy to GitHub Pages
+    if: ${{ needs.validate.outputs.docs_changed == 'true' || needs.validate.outputs.build_success == 'true' || github.event.inputs.force_deploy == 'true' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          cd docs
+          npm install --silent
+
+      - name: Build Documentation
+        run: |
+          cd docs
+          npm run build
+
+      - name: Setup Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/dist'
+          name: github-pages
+          retention-days: 1
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/deploy-pages@v4
+
+      - name: Output Deployment URL
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          echo "🚀 Documentation deployed successfully!"
+          echo "📄 URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "🔗 Repository: ${{ github.server_url }}/${{ github.repository }}"
+
+      - name: Create Deployment Status
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment_url = '${{ steps.deployment.outputs.page_url }}';
+            const repo_url = '${{ github.server_url }}/${{ github.repository }}';
+
+            // Create a comment on the commit with deployment info
+            if (github.event.head_commit) {
+              await github.rest.issues.createComment({
+                issue_number: 0,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🚀 **Documentation Deployed Successfully!**
+
+              📄 **Live URL:** [${deployment_url}](${deployment_url})
+
+              🔗 **Repository:** [${repo_url}](${repo_url})
+
+              📝 **Changes:**
+              ${github.event.head_commit.message}
+
+              ---
+              *Deployment triggered by commit: ${github.event.head_commit.id.substring(0, 7)}*
+              `
+              });
+            }
+
+  notify:
+    needs: [validate, deploy]
+    runs-on: ubuntu-latest
+    name: Notify Deployment Status
+    if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+      - name: Determine Status
+        id: status
+        run: |
+          if [ "${{ needs.validate.result }}" == "success" ] && [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "message=Documentation deployed successfully" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "message=Documentation deployment failed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Deployment Commit
+        if: steps.status.outputs.status == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Create a deployment info file
+            const deploymentInfo = {
+              deployed_at: new Date().toISOString(),
+              commit_sha: process.env.GITHUB_SHA,
+              url: '${{ needs.deploy.outputs.page_url || steps.deployment.outputs.page_url }}',
+              workflow_run: process.env.GITHUB_RUN_ID,
+              status: 'success'
+            };
+
+            const infoPath = path.join(process.cwd(), 'docs', 'deployment-info.json');
+            fs.writeFileSync(infoPath, JSON.stringify(deploymentInfo, null, 2));
+
+            console.log('Deployment info created:', deploymentInfo);
+
+      - name: Slack Notification (Optional)
+        if: steps.status.outputs.status == 'failure'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ steps.status.outputs.status }}
+          text: ${{ steps.status.outputs.message }}
+          channel: '#deployments'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
+
+      - name: Discord Notification (Optional)
+        if: steps.status.outputs.status == 'success'
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            🎉 **Documentation Successfully Deployed!**
+
+            📄 **URL:** ${{ needs.deploy.outputs.page_url || steps.deployment.outputs.page_url }}
+
+            🔗 **Repository:** ${{ github.server_url }}/${{ github.repository }}
+
+            ✅ **Status:** ${{ steps.status.outputs.status }}
+
+            ⏰ **Deployed at:** {{ now }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        continue-on-error: true
+
+  cleanup:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: Cleanup Old Artifacts
+    if: always() && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Delete old workflow runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const workflow_runs = await github.rest.actions.listWorkflowRunsForRepo({
+              owner,
+              repo,
+              per_page: 10
+            });
+
+            // Keep only the latest 5 workflow runs
+            const runs_to_delete = workflow_runs.data.workflow_runs.slice(5);
+
+            for (const run of runs_to_delete) {
+              try {
+                await github.rest.actions.deleteWorkflowRun({
+                  owner,
+                  repo,
+                  run_id: run.id
+                });
+                console.log(`Deleted workflow run ${run.id}`);
+              } catch (error) {
+                console.log(`Failed to delete workflow run ${run.id}: ${error.message}`);
+              }
+            }

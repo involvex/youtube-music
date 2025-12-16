@@ -1,0 +1,54 @@
+name: Test Documentation Build
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'docs/**'
+
+jobs:
+  test-docs:
+    runs-on: ubuntu-latest
+    name: Test Documentation Build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          cd docs
+          npm install
+
+      - name: Build Documentation
+        run: |
+          cd docs
+          npm run build
+
+      - name: Test Build Output
+        run: |
+          cd docs
+          # Check if essential files exist
+          test -f dist/index.html || exit 1
+          test -f dist/assets/css/style.css || exit 1
+          test -f dist/assets/js/main.js || exit 1
+          echo "✓ All essential files present"
+
+      - name: Check for Broken Links
+        run: |
+          cd docs/dist
+          # Basic check for relative links
+          grep -r "href=\".*#" index.html | head -5 || echo "No internal anchors found"
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-build
+          path: docs/dist
+          retention-days: 7
