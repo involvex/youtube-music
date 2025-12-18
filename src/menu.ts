@@ -156,7 +156,57 @@ export const mainMenuTemplate = async (
   return [
     {
       label: t('main.menu.plugins.label'),
-      submenu: pluginMenus,
+      submenu: [
+        ...pluginMenus,
+        { type: 'separator' },
+        {
+          label: 'Install Plugin',
+          submenu: [
+            {
+              label: 'From Folder...',
+              async click() {
+                const { filePaths } = await dialog.showOpenDialog(win, {
+                  properties: ['openDirectory'],
+                  title: 'Select Plugin Folder',
+                });
+                if (filePaths && filePaths.length > 0) {
+                  dialog.showMessageBox(win, {
+                    type: 'info',
+                    title: 'Install Plugin',
+                    message: `Installing from folder: ${filePaths[0]}\n\n(Feature currently in development: Plugins must be placed in src/plugins and built with the app)`,
+                  });
+                }
+              },
+            },
+            {
+              label: 'From GitHub URL...',
+              async click() {
+                const url = await prompt(
+                  {
+                    title: 'Install Plugin',
+                    label: 'GitHub Repository URL:',
+                    type: 'input',
+                    inputAttrs: {
+                      type: 'url',
+                      placeholder: 'https://github.com/user/repo',
+                    },
+                    ...promptOptions(),
+                  },
+                  win,
+                );
+
+                if (url) {
+                  dialog.showMessageBox(win, {
+                    type: 'info',
+                    title: 'Install Plugin',
+                    message: `Installing from URL: ${url}\n\n(Feature currently in development: Plugins must be placed in src/plugins and built with the app)`,
+                  });
+                }
+              },
+            },
+          ],
+        },
+      ],
     },
     {
       label: t('main.menu.options.label'),
