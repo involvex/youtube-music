@@ -2,7 +2,7 @@
   "name": "ytmusic-involvex",
   "desktopName": "com.github.involvex.ytmusic",
   "productName": "YTMusic Involvex-Edition",
-  "version": "3.12.6",
+  "version": "3.12.7",
   "description": "YTMusic Involvex-Edition",
   "main": "./dist/main/index.js",
   "type": "module",
