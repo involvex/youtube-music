@@ -11,8 +11,11 @@
   "author": {
     "name": "involvex",
     "email": "lukaswill97@gmail.com",
-    "url": "https://involvex.github.io/involvex"
+    "url": "https://involvex.github.io/Involvex/"
   },
+  "workspaces": [
+    "docs"
+  ],
   "scripts": {
     "test": "pnpm playwright test",
     "test:debug": "pnpm cross-env DEBUG=pw:*,-pw:test:protocol playwright test",

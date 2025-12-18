@@ -99,7 +99,7 @@ export const mainMenuTemplate = async (
       return [
         id,
         {
-          label: pluginLabel,
+          label: `${pluginLabel} ✔`,
           sublabel: isNew ? t('main.menu.plugins.new') : undefined,
           toolTip: pluginDescription,
           submenu: [
@@ -678,7 +678,24 @@ export const mainMenuTemplate = async (
     },
     {
       label: t('main.menu.about'),
-      submenu: [{ role: 'about' }],
+      submenu: [
+        {
+          label: `${packageJson.productName} v${packageJson.version}`,
+          enabled: false,
+        },
+        {
+          label: `Created by ${packageJson.author.name}`,
+          click() {
+            shell.openExternal(packageJson.author.url);
+          },
+        },
+        {
+          label: 'GitHub Repository',
+          click() {
+            shell.openExternal(packageJson.repository);
+          },
+        },
+      ],
     },
   ];
 };
