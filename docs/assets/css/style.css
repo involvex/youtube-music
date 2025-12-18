@@ -146,11 +146,8 @@ body {
   font-size: var(--font-size-base);
   line-height: 1.6;
   color: var(--text-primary);
-  background-color: var(--bg-primary);
+
   overflow-x: hidden;
-  transition:
-    background-color var(--transition-normal),
-    color var(--transition-normal);
 }
 
 /* Typography */
@@ -262,7 +259,7 @@ a:hover {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(32, 228, 235, 0.2),
     transparent
   );
   transition: left var(--transition-slow);
@@ -313,11 +310,19 @@ a:hover {
   left: 0;
   right: 0;
   height: var(--navbar-height);
-  background: rgba(197, 197, 197, 0.53);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-light);
   z-index: var(--z-fixed);
   transition: all var(--transition-normal);
+}
+[data-theme='light'] .navbar {
+  background: rgba(69, 69, 70, 0.53);
+}
+[data-theme='dark'] .navbar {
+  background: rgba(17, 24, 39, 0.95);
+}
+.navbar:hover {
+  background: rgba(69, 69, 70, 0.83);
 }
 
 [data-theme='dark'] .navbar {
@@ -332,6 +337,13 @@ a:hover {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-6);
+  background: var(--bg-card);
+}
+.nav-title {
+  color: var(--text-primary);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+  border-color: var(--border-color);
 }
 
 .nav-brand {
@@ -357,11 +369,11 @@ a:hover {
 }
 
 [data-theme='dark'] .nav-logo {
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.1));
+  filter: drop-shadow(0 1px 2px rgba(52, 65, 240, 0.1));
 }
 
 [data-theme='dark'] .nav-logo:hover {
-  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.15));
+  filter: drop-shadow(0 2px 4px rgba(52, 65, 240, 0.15));
 }
 
 /* Logo fallback for loading states */
@@ -543,7 +555,7 @@ a:hover {
   align-items: center;
   gap: var(--spacing-2);
   padding: var(--spacing-2) var(--spacing-4);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(52, 65, 240, 0.1);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   backdrop-filter: blur(10px);
@@ -1487,7 +1499,7 @@ input:checked + .toggle-slider:before {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.4),
+    rgba(16, 106, 224, 0.4),
     transparent
   );
   animation: loading 1.5s infinite;

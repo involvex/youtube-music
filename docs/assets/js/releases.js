@@ -1,4 +1,5 @@
 // YTMusic Involvex-Edition - Releases Data
+// const API_URL = 'https://api.github.com/repos/involvex/youtube-music/tags';
 const RELEASES_DATA = {
   latest: {
     version: '2.1.0',
@@ -423,7 +424,48 @@ function requestFeature() {
     '_blank'
   );
 }
+async function getLatestTag() {
+  const url = 'https://api.github.com/repos/involvex/youtube-music/tags';
 
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status}`);
+  }
+
+  const tags = await response.json();
+  if (!Array.isArray(tags) || tags.length === 0) {
+    throw new Error('No tags found');
+  }
+
+  // GitHub returns tags sorted newest → oldest
+  const latest = tags[0];
+  console.log('Latest tag:', latest.name);
+  return latest;
+}
+
+getLatestTag().catch(console.error);
+
+async function highlightlatestrelease() {
+  const releasehighlightelement = document.getElementById('release-highlight');
+
+  try {
+    const latest = await getLatestTag();
+
+    const tagName = latest.name;
+    const tagUrl = `https://github.com/involvex/youtube-music/releases/tag/${tagName}`;
+
+    releasehighlightelement.innerHTML = `
+      <strong>Latest Release:</strong> ${tagName}<br>
+      <a href="${tagUrl}" target="_blank">${tagUrl}</a>
+    `;
+  } catch (err) {
+    releasehighlightelement.textContent =
+      '<h1 styles="color: red">Failed to load latest release.</h1>';
+    console.error(err);
+  }
+}
+
+highlightlatestrelease();
 // GitHub API Integration
 async function fetchLatestRelease() {
   try {
@@ -438,6 +480,7 @@ async function fetchLatestRelease() {
         name: release.name || release.tag_name,
         downloadUrl: release.html_url,
         notes: release.body,
+        commiturl: release.commit.url,
       };
     }
   } catch {
