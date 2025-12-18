@@ -103,7 +103,9 @@ export default createPlugin({
         }
       }
     },
-    resetSegments: () => (currentSegments = []),
+    resetSegments: () => {
+      currentSegments = [];
+    },
     start({ ipc }) {
       ipc.on('sponsorblock-skip', (segments: Segment[]) => {
         currentSegments = segments;

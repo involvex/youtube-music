@@ -498,7 +498,7 @@ async function createMainWindow() {
       win.setTitleBarOverlay({
         ...defaultTitleBarOverlayOptions,
         height: Math.floor(
-          defaultTitleBarOverlayOptions.height! *
+          (defaultTitleBarOverlayOptions.height ?? 0) *
             win.webContents.getZoomFactor(),
         ),
       });

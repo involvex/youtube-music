@@ -1,7 +1,7 @@
 /**
  * Application ID registered by @th-ch/pear-desktop dev team
  */
-export const clientId = '1177081335727267940';
+export const clientId = '1438575785228242994';
 /**
  * Throttle time for progress updates in milliseconds
  */

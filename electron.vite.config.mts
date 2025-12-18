@@ -155,7 +155,10 @@ export default defineConfig({
         },
       },
       resolve: {
-        alias: resolveAlias,
+        alias: {
+          ...resolveAlias,
+          'zlibjs/bin/gunzip.min.js': resolve(__dirname, './src/zlib-shim.ts'),
+        },
       },
       server: {
         cors: {

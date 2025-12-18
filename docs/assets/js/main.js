@@ -224,16 +224,15 @@
     navMenu.classList.toggle('active');
     mobileMenuToggle.classList.toggle('active');
 
-    // Animate hamburger menu
-    const spans = mobileMenuToggle.querySelectorAll('span');
-    if (mobileMenuToggle.classList.contains('active')) {
-      spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-      spans[1].style.opacity = '0';
-      spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+    // Update ARIA attributes for accessibility
+    const isExpanded = navMenu.classList.contains('active');
+    mobileMenuToggle.setAttribute('aria-expanded', isExpanded);
+
+    // Prevent body scroll when menu is open
+    if (isExpanded) {
+      document.body.style.overflow = 'hidden';
     } else {
-      spans[0].style.transform = '';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = '';
+      document.body.style.overflow = '';
     }
   }
 
@@ -241,11 +240,11 @@
     navMenu.classList.remove('active');
     mobileMenuToggle.classList.remove('active');
 
-    // Reset hamburger menu
-    const spans = mobileMenuToggle.querySelectorAll('span');
-    spans[0].style.transform = '';
-    spans[1].style.opacity = '1';
-    spans[2].style.transform = '';
+    // Reset ARIA attributes
+    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+
+    // Restore body scroll
+    document.body.style.overflow = '';
   }
 
   // Scroll Animations
