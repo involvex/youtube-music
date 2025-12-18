@@ -124,7 +124,7 @@ const DOWNLOAD_PLATFORMS = {
     icon: '🪟',
     format: '.exe',
     architectures: ['x64', 'x86'],
-    installer: 'Microsoft Store, Direct Download, Winget',
+    installer: 'Microsoft Store, Direct Download',
   },
   macos: {
     name: 'macOS',
@@ -362,6 +362,20 @@ function createDownloadNotification(platformName) {
   return notification;
 }
 
+function createNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `download-notification ${type}`;
+  notification.innerHTML = `
+    <div class="notification-content">
+      <div class="notification-icon">ℹ️</div>
+      <div class="notification-text">
+        <strong>${message}</strong>
+      </div>
+    </div>
+  `;
+  return notification;
+}
+
 // Utility Functions
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -370,24 +384,6 @@ function formatDate(dateString) {
     month: 'long',
     day: 'numeric',
   });
-}
-
-function formatVersionNumber(version) {
-  return `v${version}`;
-}
-
-function isLatestRelease(release) {
-  return release.version === RELEASES_DATA.latest.version;
-}
-
-function getReleaseTypeBadge(type) {
-  const badges = {
-    major: { text: 'Major Release', icon: '🎉', color: '#10b981' },
-    minor: { text: 'Feature Update', icon: '🔄', color: '#3b82f6' },
-    patch: { text: 'Bug Fix', icon: '🐛', color: '#f59e0b' },
-  };
-
-  return badges[type] || badges.minor;
 }
 
 // Action Functions
@@ -444,7 +440,7 @@ async function fetchLatestRelease() {
         notes: release.body,
       };
     }
-  } catch (error) {
+  } catch {
     console.warn('Could not fetch latest release from GitHub API');
   }
   return RELEASES_DATA.latest;

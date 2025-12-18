@@ -1,4 +1,4 @@
-name: Build Pear Desktop
+name: Build YTMusic Involvex
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     if: github.event.pull_request.draft == false
-    name: Build Pear Desktop
+    name: Build YTMusic Involvex
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true

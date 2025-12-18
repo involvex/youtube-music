@@ -28,16 +28,16 @@ export const buildDiscordButtons = (
   songInfo: SongInfo,
 ): GatewayActivityButton[] | undefined => {
   const buttons: GatewayActivityButton[] = [];
-  if (config.playOnPearDesktop && songInfo.url) {
+  if (config.playOnYouTubeMusic && songInfo.url) {
     buttons.push({
-      label: 'Play on Pear Desktop',
+      label: 'Play on YTMusic',
       url: songInfo.url,
     });
   }
   if (!config.hideGitHubButton) {
     buttons.push({
       label: 'View App On GitHub',
-      url: 'https://github.com/pear-devs/pear-desktop',
+      url: 'https://github.com/invovex/ytmusic-involvex',
     });
   }
   return buttons.length ? buttons : undefined;

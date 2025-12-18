@@ -240,8 +240,17 @@ export const onMainLoad = async ({
     downloadPlaylist(url),
   );
 
-  downloadSongOnFinishSetup({ ipc, getConfig });
+  downloadSongOnFinishCleanup = downloadSongOnFinishSetup({ ipc, getConfig });
 };
+
+export const stop = () => {
+  if (downloadSongOnFinishCleanup) {
+    downloadSongOnFinishCleanup();
+    downloadSongOnFinishCleanup = undefined;
+  }
+};
+
+let downloadSongOnFinishCleanup: (() => void) | undefined;
 
 export const onConfigChange = (newConfig: DownloaderPluginConfig) => {
   config = newConfig;
@@ -298,7 +307,7 @@ function downloadSongOnFinishSetup({
 
   const defaultDownloadFolder = app.getPath('downloads');
 
-  registerCallback((songInfo: SongInfo, event) => {
+  unregisterCallback = registerCallback((songInfo: SongInfo, event) => {
     if (event === SongInfoEvent.TimeChanged) {
       const elapsedSeconds = songInfo.elapsedSeconds ?? 0;
       if (elapsedSeconds > time) time = elapsedSeconds;
@@ -342,7 +351,16 @@ function downloadSongOnFinishSetup({
   ipcMain.on('peard:player-api-loaded', () => {
     ipc.send('peard:setup-time-changed-listener');
   });
+
+  return () => {
+    if (unregisterCallback) {
+      unregisterCallback();
+      unregisterCallback = undefined;
+    }
+  };
 }
+
+let unregisterCallback: (() => void) | undefined;
 
 async function downloadSongUnsafe(
   isId: boolean,
@@ -517,7 +535,37 @@ async function downloadSongUnsafe(
     return;
   }
 
-  const stream = await info.download(downloadOptions);
+  const downloadOperation: NetworkOperation<
+    ReadableStream<Uint8Array>
+  > = async () => {
+    return await info.download(downloadOptions);
+  };
+
+  const downloadResult = await NetworkResilienceManager.executeWithRetry(
+    downloadOperation,
+    config.networkResilience.enabled
+      ? {
+          maxRetries: config.networkResilience.maxRetries,
+          baseDelay: config.networkResilience.baseDelay,
+          maxDelay: config.networkResilience.maxDelay,
+          backoffMultiplier: config.networkResilience.backoffMultiplier,
+          jitter: config.networkResilience.jitter,
+          timeout: config.networkResilience.requestTimeout,
+        }
+      : { maxRetries: 0 },
+    `Downloading stream for ${id}`,
+  );
+
+  if (!downloadResult.success) {
+    throw new NetworkError(
+      `Failed to download stream after ${downloadResult.attempt} attempts: ${downloadResult.error?.message}`,
+      NetworkErrorType.CONNECTION_FAILED,
+      false,
+      downloadResult.error,
+    );
+  }
+
+  const stream = downloadResult.data!;
 
   console.info(
     t('plugins.downloader.backend.feedback.download-info', {

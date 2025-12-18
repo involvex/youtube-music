@@ -457,12 +457,12 @@
         "disconnected": "Disconnected",
         "hide-duration-left": "Hide duration left",
         "hide-github-button": "Hide GitHub link Button",
-        "play-on-pear-desktop": "Play on Pear Desktop",
+        "play-on-ytmusic": "Play on YTMusic",
         "set-inactivity-timeout": "Set inactivity timeout",
         "set-status-display-type": {
           "label": "Status text",
           "submenu": {
-            "pear-desktop": "Listening to Pear Desktop",
+            "details": "Listening to YTMusic Involvex Edition",
             "artist": "Listening to {artist}",
             "title": "Listening to {song title}"
           }

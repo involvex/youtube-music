@@ -4,10 +4,13 @@
   "description": "Modern documentation website for YTMusic Involvex-Edition",
   "main": "index.html",
   "scripts": {
-    "dev": "npx http-server . -p 3000 -o",
+    "dev": "http-server . -p 3000 -o",
     "build": "echo 'Static site - no build step required'",
-    "preview": "npx http-server dist -p 4173 -o",
-    "format": "npx prettier --write assets/css/style.css assets/js/*.js index.html",
+    "preview": "http-server dist -p 4173 -o",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prebuild": "npm run lint:fix && npm run format",
+    "format": "prettier --write assets/css/style.css assets/js/*.js index.html",
     "validate": "npm run validate:structure",
     "validate:structure": "node scripts/validate-structure.js",
     "test": "npm run validate && npm run build"
@@ -31,6 +34,7 @@
   },
   "homepage": "https://ytmusic-involvex.github.io/youtube-music/",
   "devDependencies": {
+    "eslint": "9.35.0",
     "http-server": "^14.1.1",
     "prettier": "^3.1.0"
   },

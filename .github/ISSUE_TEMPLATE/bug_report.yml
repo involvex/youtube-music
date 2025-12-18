@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a Pear Desktop bug
+description: Report a YTMusic Involvex bug
 title: '[Bug]: '
 labels: 'bug :beetle:'
 body:
@@ -8,17 +8,17 @@ body:
       label: Preflight Checklist
       description: Please ensure you've completed all of the following.
       options:
-        - label: I use the latest version of Pear Desktop (Application).
+        - label: I use the latest version of YTMusic Involvex (Application).
           required: true
-        - label: I have searched the [issue tracker](https://github.com/pear-devs/pear-desktop/issues) for a bug report that matches the one I want to file, without success.
+        - label: I have searched the [issue tracker](https://github.com/involvex/youtube-music/issues) for a bug report that matches the one I want to file, without success.
           required: true
-        - label: I understand that **pear-devs/pear-desktop has NO affiliation with Google or YouTube**
+        - label: I understand that **involvex/youtube-music has NO affiliation with Google or YouTube**
           required: true
   - type: input
     attributes:
-      label: Pear Desktop (Application) Version
+      label: YTMusic Involvex (Application) Version
       description: |
-        What version of the Pear Desktop Application are you using?
+        What version of the YTMusic Involvex Application are you using?
 
         Note: Please check if this issue is reproducible with the latest stable release.
       placeholder: 2.0.0
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Checklists
       options:
-        - label: I use the portable version of the Pear Desktop Application.
+        - label: I use the portable version of the YTMusic Involvex Application.
         - label: I can reproduce this issue in the [official version of (WEB) YTM](https://music.youtube.com).
   - type: dropdown
     attributes:

@@ -213,7 +213,6 @@ function renderPluginsGrid(containerId = 'plugins-grid') {
   if (!container) return;
 
   const filteredPlugins = getFilteredPlugins();
-  const searchTerm = getSearchTerm();
 
   container.innerHTML = '';
 
@@ -462,6 +461,18 @@ function installPlugin(pluginId) {
 }
 
 // Utility Functions
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 function createNotification(message, type = 'info') {
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
