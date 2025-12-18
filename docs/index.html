@@ -25,10 +25,10 @@
       property="og:description"
       content="Enhanced YouTube Music desktop application with advanced features and plugins"
     />
-    <meta property="og:image" content="/assets/logo.png" />
+    <meta property="og:image" content="assets/logo.png" />
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/logo.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -52,7 +52,7 @@
     <nav class="navbar" id="navbar">
       <div class="nav-container">
         <div class="nav-brand">
-          <img src="/assets/logo.png" alt="YTMusic Logo" class="nav-logo" />
+          <img src="assets/logo.png" alt="YTMusic Logo" class="nav-logo" />
           <span class="nav-title">YTMusic Involvex-Edition</span>
         </div>
         <ul class="nav-menu" id="nav-menu">
@@ -428,7 +428,7 @@
 
         <div class="installation-tabs">
           <div class="tab-buttons">
-            <button class="tab-button active" data-tab="windows">
+            <button type="button" class="tab-button active" data-tab="windows">
               <svg
                 width="16"
                 height="16"
@@ -441,7 +441,7 @@
               </svg>
               Windows
             </button>
-            <button class="tab-button" data-tab="macos">
+            <button type="button" class="tab-button" data-tab="macos">
               <svg
                 width="16"
                 height="16"
@@ -454,7 +454,7 @@
               </svg>
               macOS
             </button>
-            <button class="tab-button" data-tab="linux">
+            <button type="button" class="tab-button" data-tab="linux">
               <svg
                 width="16"
                 height="16"
@@ -657,11 +657,21 @@
 
         <div class="config-tabs">
           <div class="config-tab-buttons">
-            <button class="config-tab-button active" data-config="general">
+            <button
+              type="button"
+              class="config-tab-button active"
+              data-config="general"
+            >
               General
             </button>
-            <button class="config-tab-button" data-config="audio">Audio</button>
-            <button class="config-tab-button" data-config="plugins">
+            <button type="button" class="config-tab-button" data-config="audio">
+              Audio
+            </button>
+            <button
+              type="button"
+              class="config-tab-button"
+              data-config="plugins"
+            >
               Plugins
             </button>
           </div>

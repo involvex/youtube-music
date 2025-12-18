@@ -57,8 +57,8 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
   const defaultTrayIcon = nativeImage
     .createFromPath(defaultTrayIconAsset)
     .resize({
-      width: 16 * pixelRatio,
-      height: 16 * pixelRatio,
+      width: 25 * pixelRatio,
+      height: 25 * pixelRatio,
     });
   const pausedTrayIcon = nativeImage
     .createFromPath(pausedTrayIconAsset)
