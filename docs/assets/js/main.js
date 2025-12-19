@@ -20,7 +20,14 @@
     initializeMobileMenu();
     initializeScrollSpy();
     initializePerformanceMonitoring();
+    initializePluginShowcase();
   });
+
+  // Plugin Showcase Initialization
+  function initializePluginShowcase() {
+    // Plugin showcase initializes itself via plugins.js DOMContentLoaded listener
+    console.log('Plugin showcase will initialize independently via plugins.js');
+  }
 
   // Theme Management
   function initializeTheme() {

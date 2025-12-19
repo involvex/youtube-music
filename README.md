@@ -311,6 +311,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <strong>Made with ❤️ by the Involvex Team</strong><br>
   <a href="https://involvex.github.io/Involvex/">Website</a> •
-  <a href="https://github.com/involvex/youtube-music">GitHub</a> •
-  <a href="mailto:lukaswill97@gmail.com">Contact</a>
+  <a href="https://github.com/involvex/youtube-music">GitHub</a> 
 </div>

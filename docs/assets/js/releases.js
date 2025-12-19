@@ -439,7 +439,7 @@ async function getLatestTag() {
 
   // GitHub returns tags sorted newest → oldest
   const latest = tags[0];
-  console.log('Latest tag:', latest.name);
+  // console.log('Latest tag:', latest.name);
   return latest;
 }
 
@@ -463,6 +463,16 @@ async function highlightlatestrelease() {
     console.error(err);
   }
 }
+
+async function updateBadge() {
+  const badgeText = document.getElementById('badgeversion');
+  const latest = await getLatestTag();
+  // console.log('Latest tag loaded:', latest);
+  badgeText.textContent = latest;
+  // console.log('Updated badge to: ' + badgeText.textContent);
+}
+
+updateBadge();
 
 highlightlatestrelease();
 // GitHub API Integration

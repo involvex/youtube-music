@@ -5,6 +5,7 @@ import prettier from 'eslint-plugin-prettier/recommended';
 import solid from 'eslint-plugin-solid/configs/recommended';
 import stylistic from '@stylistic/eslint-plugin';
 import tsEslint from 'typescript-eslint';
+import html from 'eslint-plugin-html';
 
 import * as importPlugin from 'eslint-plugin-import';
 
@@ -135,6 +136,24 @@ export default tsEslint.config(
         typescript: {},
         exports: {},
       },
+    },
+  },
+  {
+    files: ['**/*.html'],
+    plugins: {
+      html,
+    },
+    rules: {
+      'prettier/prettier': [
+        'error',
+        {
+          singleQuote: true,
+          semi: true,
+          tabWidth: 2,
+          trailingComma: 'all',
+          quoteProps: 'preserve',
+        },
+      ],
     },
   },
   // JavaScript configuration for .js files (without TypeScript project context)
