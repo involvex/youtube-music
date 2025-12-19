@@ -310,6 +310,7 @@ a:hover {
   left: 0;
   right: 0;
   height: var(--navbar-height);
+  background-color: #0891b2;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-light);
   z-index: var(--z-fixed);
@@ -584,6 +585,12 @@ a:hover {
   color: var(--text-secondary);
   margin-bottom: var(--spacing-8);
   line-height: 1.6;
+}
+[data-theme='dark'] .hero-description {
+  color: #111827;
+}
+[data-theme='light'] .hero-description {
+  color: #000000;
 }
 
 .hero-actions {
@@ -1532,4 +1539,14 @@ input:checked + .toggle-slider:before {
     padding: var(--spacing-8) 0;
     break-inside: avoid;
   }
+}
+
+.support-content {
+  align-content: center;
+  text-align: center;
+  align-self: center;
+}
+
+.supporting {
+  background: var(--bg-card);
 }

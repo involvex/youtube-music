@@ -459,8 +459,7 @@ async function highlightlatestrelease() {
       <a href="${tagUrl}" target="_blank">${tagUrl}</a>
     `;
   } catch (err) {
-    releasehighlightelement.textContent =
-      '<h1 styles="color: red">Failed to load latest release.</h1>';
+    releasehighlightelement.textContent = 'Failed to load latest release.';
     console.error(err);
   }
 }
