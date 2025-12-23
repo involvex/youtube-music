@@ -2,9 +2,21 @@ import { createSignal } from 'solid-js';
 import { render } from 'solid-js/web';
 
 import { TitleBar } from './renderer/TitleBar';
-import { defaultInAppMenuConfig, type InAppMenuConfig } from './constants';
+import type { InAppMenuConfig } from './constants';
 
 import type { RendererContext } from '@/types/contexts';
+
+const defaultInAppMenuConfig: InAppMenuConfig = {
+  enabled:
+    ((typeof window !== 'undefined' &&
+      !window.navigator?.userAgent?.toLowerCase().includes('mac')) ||
+      (typeof global !== 'undefined' &&
+        global.process?.platform !== 'darwin')) &&
+    ((typeof window !== 'undefined' &&
+      !window.navigator?.userAgent?.toLowerCase().includes('linux')) ||
+      (typeof global !== 'undefined' && global.process?.platform !== 'linux')),
+  hideDOMWindowControls: false,
+};
 
 const scrollStyle = `
   html::-webkit-scrollbar {

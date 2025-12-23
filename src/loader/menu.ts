@@ -1,5 +1,5 @@
 import { deepmerge } from 'deepmerge-ts';
-import { allPlugins } from 'virtual:plugins';
+// import { allPlugins } from 'virtual:plugins';
 
 import * as config from '@/config';
 import { setApplicationMenu } from '@/menu';
@@ -19,14 +19,14 @@ const createContext = (
 ): MenuContext<PluginConfig> => ({
   getConfig: async () =>
     deepmerge(
-      (await allPlugins())[id].config ?? { enabled: false },
+      {}, // (await allPlugins())[id].config ?? { enabled: false },
       config.get(`plugins.${id}`) ?? {},
     ) as PluginConfig,
   setConfig: async (newConfig) => {
     config.setPartial(
       `plugins.${id}`,
       newConfig,
-      (await allPlugins())[id].config,
+      {}, // (await allPlugins())[id].config,
     );
   },
   window: win,
@@ -41,7 +41,7 @@ const createContext = (
 
 export const forceLoadMenuPlugin = async (id: string, win: BrowserWindow) => {
   try {
-    const plugin = (await allPlugins())[id];
+    const plugin = {} as any; // (await allPlugins())[id];
     if (!plugin) return;
 
     const menu = plugin.menu?.(createContext(id, win));
@@ -72,9 +72,10 @@ export const forceLoadMenuPlugin = async (id: string, win: BrowserWindow) => {
 export const loadAllMenuPlugins = async (win: BrowserWindow) => {
   const pluginConfigs = config.plugins.getPlugins();
 
-  for (const [pluginId, pluginDef] of Object.entries(await allPlugins())) {
+  for (const [pluginId] of Object.entries({})) {
+    // Object.entries(await allPlugins())) {
     const config = deepmerge(
-      pluginDef.config ?? { enabled: false },
+      { config: { enabled: false } },
       pluginConfigs[pluginId] ?? {},
     );
 

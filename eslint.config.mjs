@@ -81,7 +81,13 @@ export default tsEslint.config(
       'importPlugin/no-unresolved': [
         'error',
         {
-          ignore: ['^virtual:', '\\?inline$', '\\?raw$', '\\?asset&asarUnpack'],
+          ignore: [
+            '^virtual:',
+            '\\?inline$',
+            '\\?raw$',
+            '\\?asset&asarUnpack',
+            '^bun$',
+          ],
         },
       ],
       'importPlugin/order': [
@@ -135,6 +141,9 @@ export default tsEslint.config(
       'import/resolver': {
         typescript: {},
         exports: {},
+        node: {
+          extensions: ['.js', '.ts', '.tsx', '.mts'],
+        },
       },
     },
   },

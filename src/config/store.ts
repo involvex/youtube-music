@@ -6,9 +6,7 @@ import { DefaultPresetList, type Preset } from '@/plugins/downloader/types';
 
 import type { SyncedLyricsPluginConfig } from '@/plugins/synced-lyrics/types';
 
-export type IStore = InstanceType<
-  typeof import('conf').default<Record<string, unknown>>
->;
+export type IStore = InstanceType<typeof Store>;
 
 const migrations = {
   '>=3.10.0'(store: IStore) {
@@ -263,4 +261,4 @@ export const store = new Store({
   },
   clearInvalidConfig: false,
   migrations,
-}) as Store & IStore;
+} as any);

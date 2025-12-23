@@ -12,7 +12,9 @@ const globalProject = new Project({
   skipFileDependencyResolution: true,
 });
 
-export const i18nImporter = () => {
+export const i18nImporter = (
+  mode: 'main' | 'preload' | 'renderer' = 'main',
+) => {
   const srcPath = resolve(__dirname, '..', 'src');
   const plugins = globSync(['src/i18n/resources/*.json']).map((path) => {
     const nameWithExt = basename(path);
@@ -27,13 +29,13 @@ export const i18nImporter = () => {
       writer.writeLine('export const languageResources = async () => {');
       writer.writeLine('  const entries = await Promise.all([');
       for (const { name, path } of plugins) {
-        const relativePath = relative(resolve(srcPath, '..'), path).replace(
-          /\\/g,
-          '/',
-        );
+        const relativePath = relative(srcPath, path).replace(/\\/g, '/');
+
+        const importPath =
+          mode === 'renderer' ? `/${relativePath}` : `@/${relativePath}`;
 
         writer.writeLine(
-          `    import('./${relativePath}').then((mod) => ({ "${name}": { translation: mod.default } })),`,
+          `    import('${importPath}').then((mod) => ({ "${name}": { translation: mod.default } })),`,
         );
       }
       writer.writeLine('  ]);');

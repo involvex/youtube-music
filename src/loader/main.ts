@@ -135,8 +135,11 @@ export const loadAllMainPlugins = async (win: BrowserWindow) => {
   const pluginConfigs = config.plugins.getPlugins();
   const queue: Promise<void>[] = [];
 
-  for (const [plugin, pluginDef] of Object.entries(await mainPlugins())) {
-    const config = deepmerge(pluginDef.config, pluginConfigs[plugin] ?? {});
+  for (const [plugin] of Object.entries(await mainPlugins())) {
+    const config = deepmerge(
+      { config: { enabled: false } },
+      pluginConfigs[plugin] ?? {},
+    );
     if (config.enabled) {
       queue.push(forceLoadMainPlugin(plugin, win));
     } else if (loadedPluginMap[plugin]) {

@@ -47,7 +47,6 @@ export const forceUnloadRendererPlugin = async (id: string) => {
   delete loadedPluginMap[id];
 
   const plugin = (await rendererPlugins())[id];
-  if (!plugin) return;
 
   const hasStopped = await stopPlugin(id, plugin, {
     ctx: 'renderer',
@@ -71,7 +70,6 @@ export const forceUnloadRendererPlugin = async (id: string) => {
 
 export const forceLoadRendererPlugin = async (id: string) => {
   const plugin = (await rendererPlugins())[id];
-  if (!plugin) return;
 
   const hasEvaled = await startPlugin(id, plugin, {
     ctx: 'renderer',
@@ -88,7 +86,7 @@ export const forceLoadRendererPlugin = async (id: string) => {
     loadedPluginMap[id] = plugin;
 
     if (plugin?.stylesheets) {
-      const styleSheetList = plugin.stylesheets.map((style) => {
+      const styleSheetList = plugin.stylesheets.map((style: string) => {
         const styleSheet = new CSSStyleSheet();
         styleSheet.replaceSync(style);
 
@@ -116,8 +114,11 @@ export const forceLoadRendererPlugin = async (id: string) => {
 export const loadAllRendererPlugins = async () => {
   const pluginConfigs = window.mainConfig.plugins.getPlugins();
 
-  for (const [pluginId, pluginDef] of Object.entries(await rendererPlugins())) {
-    const config = deepmerge(pluginDef.config, pluginConfigs[pluginId] ?? {});
+  for (const [pluginId] of Object.entries(await rendererPlugins())) {
+    const config = deepmerge(
+      { config: { enabled: false } },
+      pluginConfigs[pluginId] ?? {},
+    );
 
     if (config.enabled) {
       await forceLoadRendererPlugin(pluginId);

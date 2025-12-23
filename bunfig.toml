@@ -1,0 +1,273 @@
+# Bun Configuration for YouTube Music Frontend Development Server
+# This configuration enables a modern development server with HMR, file watching, and asset optimization
+# Designed to run natively without Electron dependencies
+
+[dev]
+# Development server configuration
+port = 3000
+host = "localhost"
+hot = true
+open = true
+cors = true
+
+# File watching configuration
+watch = true
+watchIgnore = [
+  "node_modules",
+  "dist",
+  "build",
+  ".git",
+  "*.log",
+  "*.tmp"
+]
+
+# HMR (Hot Module Replacement) settings
+hmr = true
+hmrPort = 3001
+hmrHost = "localhost"
+
+# Development server options
+compress = true
+proxy = {}
+headers = {}
+
+# Environment variables for development
+env = {
+  NODE_ENV = "development",
+  BUN_ENV = "development",
+  DEV_SERVER_PORT = "3000",
+  HMR_PORT = "3001"
+}
+
+[build]
+# Build optimization settings
+minify = true
+target = "browser"
+sourcemap = "inline"
+splitting = true
+treeShaking = true
+
+# Output configuration
+out = "./dist"
+entry = ["src/index.html"]
+
+# Asset optimization
+assets = {
+  publicPath = "/",
+  inline = false,
+  hash = true
+}
+
+# CSS processing
+css = {
+  minify = true,
+  extract = true,
+  sourceMap = true
+}
+
+# JavaScript optimization
+js = {
+  minifyIdentifiers = true,
+  minifySyntax = true,
+  minifyWhitespace = true
+}
+
+# Bundle analysis
+analyze = false
+
+[install]
+# Package installation settings
+peerDependencies = true
+optionalDependencies = true
+devDependencies = true
+
+[run]
+# Runtime configuration
+target = "browser"
+compat = "browser"
+loader = {
+  ".css" = "css",
+  ".js" = "jsx", 
+  ".ts" = "tsx",
+  ".tsx" = "tsx",
+  ".json" = "json",
+  ".txt" = "text",
+  ".svg" = "text",
+  ".png" = "file",
+  ".jpg" = "file",
+  ".jpeg" = "file",
+  ".gif" = "file",
+  ".webp" = "file",
+  ".ico" = "file",
+  ".woff" = "file",
+  ".woff2" = "file",
+  ".ttf" = "file",
+  ".eot" = "file"
+}
+
+# Environment variables
+env = {
+  NODE_ENV = "production",
+  BUN_ENV = "production"
+}
+
+[types]
+# TypeScript configuration
+check = true
+emit = true
+declaration = true
+declarationMap = true
+
+[paths]
+# Path resolution aliases
+"@/*" = ["./src/*"]
+"@assets/*" = ["./assets/*"]
+"@components/*" = ["./src/components/*"]
+"@utils/*" = ["./src/utils/*"]
+"@types/*" = ["./src/types/*"]
+"@config/*" = ["./src/config/*"]
+"@i18n/*" = ["./src/i18n/*"]
+"@plugins/*" = ["./src/plugins/*"]
+"@providers/*" = ["./src/providers/*"]
+
+[plugins]
+# Plugin configuration
+solid = {
+  enabled = true,
+  options = {
+    generate = "dom",
+    hydratable = false,
+    ssr = false
+  }
+}
+
+# CSS processing plugins
+postcss = {
+  enabled = true,
+  config = "./postcss.config.js"
+}
+
+# Development plugins
+dev = {
+  hmr = {
+    enabled = true,
+    port = 3001
+  },
+  proxy = {
+    enabled = false
+  }
+}
+
+[server]
+# Development server advanced settings
+static = {
+  enabled = true,
+  path = "./public",
+  index = "index.html"
+}
+
+# WebSocket configuration for HMR
+websocket = {
+  enabled = true,
+  port = 3001,
+  host = "localhost"
+}
+
+# Middleware configuration
+middleware = {
+  cors = true,
+  compression = true,
+  static = true
+}
+
+[optimization]
+# Build optimization settings
+codeSplitting = true
+chunkSize = 1000
+maxChunks = 10
+
+# Asset optimization
+assets = {
+  inlineLimit = 4096,
+  hashNames = true,
+  publicPath = "/"
+}
+
+# Tree shaking
+treeShaking = {
+  enabled = true,
+  pure = ["console.log", "console.warn"]
+}
+
+[performance]
+# Performance monitoring
+bundleSizeLimit = "1MB"
+chunkSizeLimit = "500KB"
+assetSizeLimit = "100KB"
+
+# Performance hints
+hints = {
+  bundleSize = true,
+  chunkSize = true,
+  assetSize = true
+}
+
+[security]
+# Security settings
+csp = {
+  enabled = true,
+  policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https:; media-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+}
+
+# HTTPS settings
+https = {
+  enabled = false,
+  key = "",
+  cert = ""
+}
+
+[testing]
+# Testing configuration
+testRunner = "bun"
+testMatch = ["**/*.test.{js,ts,tsx}"]
+testTimeout = 10000
+
+# Coverage settings
+coverage = {
+  enabled = false,
+  include = ["src/**/*"],
+  exclude = ["**/*.test.*", "**/*.spec.*", "**/node_modules/**"]
+}
+
+[formatting]
+# Code formatting settings
+prettier = {
+  enabled = true,
+  config = "./.prettierrc"
+}
+
+# Linting settings
+eslint = {
+  enabled = true,
+  config = "./eslint.config.mjs"
+}
+
+[compatibility]
+# Browser compatibility
+browserslist = [
+  "> 1%",
+  "last 2 versions",
+  "not dead",
+  "not ie 11"
+]
+
+# Node.js compatibility
+node = {
+  version = ">=18.0.0"
+}
+
+[experimental]
+# Experimental features
+topLevelAwait = true
+dynamicImport = true
+importMeta = true

@@ -20,7 +20,7 @@ import {
 import is from 'electron-is';
 import unhandled from 'electron-unhandled';
 // import { autoUpdater } from 'electron-updater';
-import { default as electronDebug } from 'electron-debug';
+import electronDebug from 'electron-debug';
 import { parse } from 'node-html-parser';
 import { deepmerge } from 'deepmerge-ts';
 import { deepEqual } from 'fast-equals';

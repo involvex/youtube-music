@@ -1,14 +1,13 @@
-import { dirname, join, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { defineConfig, defineViteConfig } from 'electron-vite';
+import { defineConfig } from 'electron-vite';
 import builtinModules from 'builtin-modules';
 
-import Inspect from 'vite-plugin-inspect';
 import solidPlugin from 'vite-plugin-solid';
 import viteResolve from 'vite-plugin-resolve';
 
-import { withFilter, type UserConfig } from 'vite';
+import { withFilter } from 'vite';
 
 import { pluginVirtualModuleGenerator } from './vite-plugins/plugin-importer.mjs';
 import pluginLoader from './vite-plugins/plugin-loader.mjs';
@@ -22,170 +21,109 @@ const resolveAlias = {
 };
 
 export default defineConfig({
-  main: defineViteConfig(({ mode }) => {
-    const commonConfig: UserConfig = {
-      experimental: {
-        enableNativePlugin: true,
+  main: {
+    experimental: {
+      enableNativePlugin: true,
+    },
+    plugins: [
+      pluginLoader('backend'),
+      viteResolve({
+        'virtual:i18n': i18nImporter('main'),
+        'virtual:plugins': pluginVirtualModuleGenerator('main'),
+      }),
+    ],
+    publicDir: 'assets',
+    define: {
+      __dirname: 'import.meta.dirname',
+      __filename: 'import.meta.filename',
+    },
+    build: {
+      lib: {
+        entry: 'src/index.ts',
+        formats: ['es'],
       },
-      plugins: [
-        pluginLoader('backend'),
-        viteResolve({
-          'virtual:i18n': i18nImporter(),
-          'virtual:plugins': pluginVirtualModuleGenerator('main'),
-        }),
-      ],
-      publicDir: 'assets',
-      define: {
-        __dirname: 'import.meta.dirname',
-        __filename: 'import.meta.filename',
+      outDir: 'dist/main',
+      rolldownOptions: {
+        external: ['electron', 'custom-electron-prompt', ...builtinModules],
+        input: './src/index.ts',
       },
-      build: {
-        lib: {
-          entry: 'src/index.ts',
-          formats: ['es'],
-        },
-        outDir: 'dist/main',
-        rolldownOptions: {
-          external: ['electron', 'custom-electron-prompt', ...builtinModules],
-          input: './src/index.ts',
-        },
+      minify: true,
+      cssMinify: true,
+    },
+    resolve: {
+      alias: resolveAlias,
+    },
+  },
+  preload: {
+    experimental: {
+      enableNativePlugin: true,
+    },
+    plugins: [
+      pluginLoader('preload'),
+      viteResolve({
+        'virtual:i18n': i18nImporter('preload'),
+        'virtual:plugins': pluginVirtualModuleGenerator('preload'),
+      }),
+    ],
+    build: {
+      lib: {
+        entry: 'src/preload.ts',
+        formats: ['cjs'],
       },
-      resolve: {
-        alias: resolveAlias,
+      outDir: 'dist/preload',
+      commonjsOptions: {
+        ignoreDynamicRequires: true,
       },
-    };
-
-    if (mode === 'development') {
-      commonConfig.build!.sourcemap = 'inline';
-      commonConfig.plugins?.push(
-        Inspect({
-          build: true,
-          outputDir: join(__dirname, '.vite-inspect/backend'),
-        }),
-      );
-      return commonConfig;
-    }
-
-    return {
-      ...commonConfig,
-      build: {
-        ...commonConfig.build,
-        minify: true,
-        cssMinify: true,
+      rolldownOptions: {
+        external: ['electron', 'custom-electron-prompt', ...builtinModules],
+        input: './src/preload.ts',
       },
-    };
-  }),
-  preload: defineViteConfig(({ mode }) => {
-    const commonConfig: UserConfig = {
-      experimental: {
-        enableNativePlugin: true,
+      minify: true,
+      cssMinify: true,
+    },
+    resolve: {
+      alias: resolveAlias,
+    },
+  },
+  renderer: {
+    experimental: {
+      enableNativePlugin: true,
+    },
+    plugins: [
+      pluginLoader('renderer'),
+      viteResolve({
+        'virtual:i18n': i18nImporter('renderer'),
+        'virtual:plugins': pluginVirtualModuleGenerator('renderer'),
+      }),
+      withFilter(solidPlugin(), {
+        load: { id: [/\.(tsx|jsx)$/, '/@solid-refresh'] },
+      }),
+    ],
+    root: './src/',
+    build: {
+      lib: {
+        entry: 'src/index.html',
+        formats: ['iife'],
+        name: 'renderer',
       },
-      plugins: [
-        pluginLoader('preload'),
-        viteResolve({
-          'virtual:i18n': i18nImporter(),
-          'virtual:plugins': pluginVirtualModuleGenerator('preload'),
-        }),
-      ],
-      build: {
-        lib: {
-          entry: 'src/preload.ts',
-          formats: ['cjs'],
-        },
-        outDir: 'dist/preload',
-        commonjsOptions: {
-          ignoreDynamicRequires: true,
-        },
-        rolldownOptions: {
-          external: ['electron', 'custom-electron-prompt', ...builtinModules],
-          input: './src/preload.ts',
-        },
+      outDir: 'dist/renderer',
+      rolldownOptions: {
+        external: ['electron', ...builtinModules],
+        input: './src/index.html',
       },
-      resolve: {
-        alias: resolveAlias,
+      minify: true,
+      cssMinify: true,
+    },
+    resolve: {
+      alias: {
+        ...resolveAlias,
+        'zlibjs/bin/gunzip.min.js': resolve(__dirname, './src/zlib-shim.ts'),
       },
-    };
-
-    if (mode === 'development') {
-      commonConfig.build!.sourcemap = 'inline';
-      commonConfig.plugins?.push(
-        Inspect({
-          build: true,
-          outputDir: join(__dirname, '.vite-inspect/preload'),
-        }),
-      );
-      return commonConfig;
-    }
-
-    return {
-      ...commonConfig,
-      build: {
-        ...commonConfig.build,
-        minify: true,
-        cssMinify: true,
+    },
+    server: {
+      cors: {
+        origin: 'https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com',
       },
-    };
-  }),
-  renderer: defineViteConfig(({ mode }) => {
-    const commonConfig: UserConfig = {
-      experimental: {
-        enableNativePlugin: mode !== 'development', // Disable native plugin in development mode to avoid issues with HMR (bug in rolldown-vite)
-      },
-      plugins: [
-        pluginLoader('renderer'),
-        viteResolve({
-          'virtual:i18n': i18nImporter(),
-          'virtual:plugins': pluginVirtualModuleGenerator('renderer'),
-        }),
-        withFilter(solidPlugin(), {
-          load: { id: [/\.(tsx|jsx)$/, '/@solid-refresh'] },
-        }),
-      ],
-      root: './src/',
-      build: {
-        lib: {
-          entry: 'src/index.html',
-          formats: ['iife'],
-          name: 'renderer',
-        },
-        outDir: 'dist/renderer',
-        rolldownOptions: {
-          external: ['electron', ...builtinModules],
-          input: './src/index.html',
-        },
-      },
-      resolve: {
-        alias: {
-          ...resolveAlias,
-          'zlibjs/bin/gunzip.min.js': resolve(__dirname, './src/zlib-shim.ts'),
-        },
-      },
-      server: {
-        cors: {
-          origin:
-            'https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com',
-        },
-      },
-    };
-
-    if (mode === 'development') {
-      commonConfig.build!.sourcemap = 'inline';
-      commonConfig.plugins?.push(
-        Inspect({
-          build: true,
-          outputDir: join(__dirname, '.vite-inspect/renderer'),
-        }),
-      );
-      return commonConfig;
-    }
-
-    return {
-      ...commonConfig,
-      build: {
-        ...commonConfig.build,
-        minify: true,
-        cssMinify: true,
-      },
-    };
-  }),
+    },
+  },
 });

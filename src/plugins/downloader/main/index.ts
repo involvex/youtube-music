@@ -55,13 +55,15 @@ import type {
 
 type CustomSongInfo = SongInfo & { trackId?: string };
 
-const ffmpeg = lazy(async () =>
-  (await import('@ffmpeg.wasm/main')).createFFmpeg({
+const ffmpeg = lazy(async () => {
+  const ffmpegModule = await import('@ffmpeg.wasm/main');
+  // Use type assertion since the original code suggests createFFmpeg should exist
+  return (ffmpegModule as any).createFFmpeg({
     log: false,
     logger() {}, // Console.log,
     progress() {}, // Console.log,
-  }),
-);
+  });
+});
 const ffmpegMutex = new Mutex();
 
 // Define types for Platform.shim.eval
@@ -673,7 +675,7 @@ async function iterableStreamToProcessedUint8Array(
 
       sendFeedback(t('plugins.downloader.backend.feedback.converting'));
 
-      ffmpegInstance.setProgress(({ ratio }) => {
+      ffmpegInstance.setProgress(({ ratio }: { ratio: number }) => {
         sendFeedback(
           t('plugins.downloader.backend.feedback.conversion-progress', {
             percent: Math.floor(ratio * 100),

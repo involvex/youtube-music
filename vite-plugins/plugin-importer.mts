@@ -46,14 +46,12 @@ export const pluginVirtualModuleGenerator = (
     'vm:pluginIndexes',
     (writer) => {
       for (const { name, path } of plugins) {
-        const relativePath = relative(resolve(srcPath, '..'), path).replace(
-          /\\/g,
-          '/',
-        );
+        const relativePath = relative(srcPath, path).replace(/\\/g, '/');
         if (mode === 'main') {
           // dynamic import (for main)
+          const importPath = `@/${relativePath}`;
           writer.writeLine(
-            `const ${kebabToCamel(name)}PluginImport = () => import('./${relativePath}');`,
+            `const ${kebabToCamel(name)}PluginImport = () => import('${importPath}');`,
           );
           writer.writeLine(
             `const ${kebabToCamel(name)}Plugin = async () => (await ${kebabToCamel(name)}PluginImport()).default;`,
@@ -63,8 +61,10 @@ export const pluginVirtualModuleGenerator = (
           );
         } else {
           // static import (preload does not support dynamic import)
+          const importPath =
+            mode === 'renderer' ? `/${relativePath}` : `@/${relativePath}`;
           writer.writeLine(
-            `import ${kebabToCamel(name)}PluginImport, { pluginStub as ${kebabToCamel(name)}PluginStubImport } from "./${relativePath}";`,
+            `import ${kebabToCamel(name)}PluginImport, { pluginStub as ${kebabToCamel(name)}PluginStubImport } from "${importPath}";`,
           );
           writer.writeLine(
             `const ${kebabToCamel(name)}Plugin = () => Promise.resolve(${kebabToCamel(name)}PluginImport);`,
