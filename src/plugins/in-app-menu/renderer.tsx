@@ -7,14 +7,7 @@ import type { InAppMenuConfig } from './constants';
 import type { RendererContext } from '@/types/contexts';
 
 const defaultInAppMenuConfig: InAppMenuConfig = {
-  enabled:
-    ((typeof window !== 'undefined' &&
-      !window.navigator?.userAgent?.toLowerCase().includes('mac')) ||
-      (typeof global !== 'undefined' &&
-        global.process?.platform !== 'darwin')) &&
-    ((typeof window !== 'undefined' &&
-      !window.navigator?.userAgent?.toLowerCase().includes('linux')) ||
-      (typeof global !== 'undefined' && global.process?.platform !== 'linux')),
+  enabled: true, // Enable on all platforms
   hideDOMWindowControls: false,
 };
 
@@ -25,8 +18,7 @@ const scrollStyle = `
 `;
 
 const isMacOS = navigator.userAgent.includes('Macintosh');
-const isNotWindowsOrMacOS =
-  !navigator.userAgent.includes('Windows') && !isMacOS;
+const showTitleBar = true; // Always show the title bar on all platforms
 
 const [config, setConfig] = createSignal<InAppMenuConfig>(
   defaultInAppMenuConfig,
@@ -45,9 +37,7 @@ export const onRendererLoad = async ({
   render(
     () => (
       <TitleBar
-        enableController={
-          isNotWindowsOrMacOS && !config().hideDOMWindowControls
-        }
+        enableController={showTitleBar && !config().hideDOMWindowControls}
         initialCollapsed={window.mainConfig.get('options.hideMenu')}
         ipc={ipc}
         isMacOS={isMacOS}
