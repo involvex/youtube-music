@@ -154,6 +154,7 @@
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "1.0.1",
+    "@emnapi/core": "^1.2.0",
     "@eslint/js": "9.39.2",
     "@malept/flatpak-bundler": "0.4.0",
     "@playwright/test": "1.57.0",

@@ -95,6 +95,38 @@ function setupYouTubeMusicEventListeners() {
   };
 
   startObservingPlayButton();
+
+  // Activity Guardian: Auto-click "Yes" on "Video paused. Continue watching?" dialog
+  setInterval(() => {
+    try {
+      const dialog = document.querySelector('ytmusic-you-there-renderer');
+      if (dialog) {
+        const button = dialog.querySelector(
+          '[aria-label="Yes"]',
+        ) as HTMLElement;
+        if (button) {
+          button.click();
+          console.log(
+            '[ActivityGuardian] Auto-clicked "Yes" on inactivity dialog',
+          );
+        }
+      }
+
+      // Also check for standard paper-dialog which is sometimes used
+      const paperDialog = document.querySelector('tp-yt-paper-dialog');
+      if (paperDialog && paperDialog.id === 'ytd-you-there-renderer-dialog') {
+        const button = paperDialog.querySelector(
+          '[aria-label="Yes"]',
+        ) as HTMLElement;
+        if (button) {
+          button.click();
+          console.log('[ActivityGuardian] Auto-clicked "Yes" on paper-dialog');
+        }
+      }
+    } catch (e) {
+      // Ignore errors
+    }
+  }, 2000);
 }
 
 function checkYouTubeMusicState() {

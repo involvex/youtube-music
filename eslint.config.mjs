@@ -22,6 +22,7 @@ export default tsEslint.config(
       'src/plugins/**',
       '.vite-inspect/**',
       'vite-plugins/**',
+      'docs/**',
     ],
   },
   // TypeScript configuration for .ts, .tsx, .mts files
