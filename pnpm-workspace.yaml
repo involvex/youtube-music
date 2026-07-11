@@ -1,2 +1,10 @@
 packages:
   - 'docs'
+allowBuilds:
+  bufferutil: true
+  bun: true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  unrs-resolver: true
+  utf-8-validate: true

@@ -222,9 +222,9 @@ export default {
       // Cleanup function
       dispose() {
         // Clean up resources
-      }
+      },
     };
-  }
+  },
 } satisfies PluginConfig;
 ```
 
@@ -254,7 +254,9 @@ export default {
 4. **Cross-platform** - Use `electron-is` for platform-specific code:
    ```typescript
    import electronIs from 'electron-is';
-   if (electronIs.windows()) { /* Windows-specific */ }
+   if (electronIs.windows()) {
+     /* Windows-specific */
+   }
    ```
 5. **i18n** - Always use translation keys, never hardcode user-facing strings
 
@@ -278,12 +280,12 @@ NODE_ENV=production
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Start dev server | `pnpm dev` |
-| Lint code | `pnpm lint` |
-| Format code | `pnpm format` |
-| Type check | `pnpm typecheck` |
-| Run tests | `pnpm test` |
-| Build for production | `pnpm build` |
-| Create Windows installer | `pnpm dist:win` |
+| Task                     | Command          |
+| ------------------------ | ---------------- |
+| Start dev server         | `pnpm dev`       |
+| Lint code                | `pnpm lint`      |
+| Format code              | `pnpm format`    |
+| Type check               | `pnpm typecheck` |
+| Run tests                | `pnpm test`      |
+| Build for production     | `pnpm build`     |
+| Create Windows installer | `pnpm dist:win`  |
